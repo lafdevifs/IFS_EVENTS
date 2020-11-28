@@ -1,0 +1,72 @@
+SET DEFINE OFF
+
+DECLARE
+   info_msg_   CLOB;
+   PROCEDURE Import_Event_Actions (
+      event_lu_name_          IN VARCHAR2,
+      event_id_               IN VARCHAR2,
+      action_number_          IN NUMBER,
+      action_enable_          IN VARCHAR2,
+      action_parameters_      IN CLOB,
+      condition_type_         IN VARCHAR2,
+      condition_value_        IN VARCHAR2,
+      definition_modified_date_  IN DATE,
+      fnd_event_action_type_  IN VARCHAR2,
+      description_            IN VARCHAR2,
+      subscribable_           IN VARCHAR2,
+      system_defined_         IN VARCHAR2,
+      role_                   IN VARCHAR2,
+      rowkey_                 IN VARCHAR2 )
+   IS
+   BEGIN
+      info_msg_ := NULL;
+      info_msg_ := Message_SYS.Construct('FND_EVENT_ACTION_TAB');
+      Message_SYS.Add_Attribute(info_msg_, 'EVENT_LU_NAME', event_lu_name_);
+      Message_SYS.Add_Attribute(info_msg_, 'EVENT_ID', event_id_);
+      Message_SYS.Add_Attribute(info_msg_, 'ACTION_NUMBER', action_number_);
+      Message_SYS.Add_Attribute(info_msg_, 'ACTION_ENABLE', action_enable_);
+      Message_SYS.Add_Clob_Attribute(info_msg_, 'ACTION_PARAMETERS', to_char(action_parameters_));
+      Message_SYS.Add_Attribute(info_msg_, 'CONDITION_TYPE', condition_type_);
+      Message_SYS.Add_Attribute(info_msg_, 'CONDITION_VALUE', condition_value_);
+      Message_SYS.Add_Attribute(info_msg_, 'DEFINITION_MODIFIED_DATE', definition_modified_date_);
+      Message_SYS.Add_Attribute(info_msg_, 'FND_EVENT_ACTION_TYPE', fnd_event_action_type_);
+      Message_SYS.Add_Attribute(info_msg_, 'DESCRIPTION', description_);
+      Message_SYS.Add_Attribute(info_msg_, 'SUBSCRIBABLE', subscribable_);
+      Message_SYS.Add_Attribute(info_msg_, 'SYSTEM_DEFINED', system_defined_);
+      Message_SYS.Add_Attribute(info_msg_, 'ROLE', role_);
+      Message_SYS.Add_Attribute(info_msg_, 'ROWKEY', rowkey_);
+      Fnd_Event_Action_API.Register(info_msg_);
+   END;
+BEGIN
+   Import_Event_Actions( Database_SYS.Unistr('BusinessOpportunity'),
+                         Database_SYS.Unistr('LAF_COM_016'), 
+                         Database_SYS.Unistr('0'),
+                         Database_SYS.Unistr('FALSE'), 
+                         Database_SYS.Unistr('!FNDSER.EVENT_ACTION_PARAM'||CHR(10)||'$SQL=DECLARE'||CHR(10)||'-'||CHR(10)||'-  contract_'||
+                         ' VARCHAR(3200) := NULL;'||CHR(10)||'-'||CHR(10)||'-  cursor verificarsite_ is'||CHR(10)||''||
+                         '-    select bol.contract'||CHR(10)||'-      from BUSINESS_OPPORTUNITY_LINE_tab bol'||
+                         ''||CHR(10)||'-     where opportunity_no = '||CHR(38)||'NEW:OPPORTUNITY_NO;'||CHR(10)||'-'||
+                         ''||CHR(10)||'-begin'||CHR(10)||'-'||CHR(10)||'-  open verificarsite_;'||CHR(10)||'-  loop'||
+                         ''||CHR(10)||'-    fetch verificarsite_'||CHR(10)||'-      into contract_;'||CHR(10)||'-   '||
+                         ' exit when verificarsite_%NOTFOUND;'||CHR(10)||'-    if contract_ != '||CHR(38)||'NEW:CONT'||
+                         'RACT then'||CHR(10)||'-      raise_application_error(-20100,'||CHR(10)||'-                '||
+                         '              ''N\00E3o \00E9 permitido sites diferentes na mesma oportunidade'');'||CHR(10)||'-  '||
+                         '  '||CHR(10)||'-    end if;'||CHR(10)||'-  '||CHR(10)||'-  end loop'||CHR(10)||'-  '||
+                         ''||CHR(10)||'-  close ;'||CHR(10)||'-end;'||CHR(10)||'$ATTACH=!ATTACHMENTS'||CHR(10)||''),
+                         Database_SYS.Unistr('!EVENT_ACTION_COND_TYPE'||CHR(10)||'$NEW:CONTRACT='||CHR(10)||'$NEW:OPPORTUNITY_NO='||
+                         ''||CHR(10)||''), 
+                         Database_SYS.Unistr('!EVENT_ACTION_COND_VALUE'||CHR(10)||'$NEW:CONTRACT='||CHR(10)||'$NEW:OPPORTUNITY_NO='||
+                         ''||CHR(10)||''),
+                         To_Date(Database_SYS.Unistr('2020-11-28-10.21.25'), 'YYYY-MM-DD-HH24.MI.SS'),
+                         Database_SYS.Unistr('EXECUTEONLINESQL'), 
+                         Database_SYS.Unistr('Verificar se o site das linhas ja registradas s\00E3o iguais aos da nova linha '), 
+                         Database_SYS.Unistr('FALSE'), 
+                         Database_SYS.Unistr('FALSE'), 
+                         Database_SYS.Unistr(''), 
+                         Database_SYS.Unistr('B524565CA7CE4059E053840110AC2491'));
+END;
+/
+COMMIT
+/
+SET DEFINE ON
+

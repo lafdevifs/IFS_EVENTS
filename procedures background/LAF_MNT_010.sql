@@ -1,5 +1,5 @@
 create or replace procedure laf_mnt_010(attr_ in varchar2) is
---ação do evento paara que um objeto serial seja sucatado quando uma ordem de fabricação seja criada usando este objserial
+
   -- p0 -> __lsResult
   p0_ VARCHAR2(32000) := NULL;
 
@@ -17,29 +17,28 @@ create or replace procedure laf_mnt_010(attr_ in varchar2) is
   -- p4 -> __sAction
   p4_ VARCHAR2(32000) := 'DO';
 
-  r1_ VARCHAR2(3200) := client_sys.Get_Item_Value('ORDER_', attr_);
   --serial_no equipment_serial
+  serial_ varchar2(3200) := client_sys.Get_Item_Value('serialNo_', attr_);
 
-  serial_ varchar2(3200);
   --part_no into equipment serial
-  part_no varchar(3200);
+  part_no_ varchar(3200) := client_sys.Get_Item_Value('partNo_', attr_);
 
-BEGIN
+  cursor modify_unic_serial is
+    select ES.objid
+      from equipment_serial_cfv es
+     where es.PART_NO = part_no_
+       and es.SERIAL_NO = serial_;
 
-  select mh.serial_no, mh.part_no
-    into serial_, part_no
-    from material_history mh
-   where mh.order_ref1 = r1_
-     AND mh.material_history_action_db = 'ISSUE'
-     and serial_no != '*';
+begin
 
-  select ES.objid
-    into p1_
-    from equipment_serial_cfv es
-   where es.part_no = part_no
-     and es.SERIAL_NO = serial_;
-
-  IFSLAF.EQUIPMENT_SERIAL_CFP.Cf_Modify__(p0_, p1_, p2_, p3_, p4_);
-
-  dbms_output.put_line(p1_);
+  open modify_unic_serial;
+  loop
+  fetch modify_unic_serial
+    into p1_;
+  exit when modify_unic_serial%NOTFOUND;
+     IFSLAF.EQUIPMENT_SERIAL_CFP.Cf_Modify__(p0_, p1_, p2_, p3_, p4_);
+  end loop;
+  close modify_unic_serial;
+  
 end;
+/

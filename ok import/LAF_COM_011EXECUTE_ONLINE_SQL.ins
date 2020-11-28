@@ -1,0 +1,160 @@
+SET DEFINE OFF
+
+DECLARE
+   info_msg_   CLOB;
+   PROCEDURE Import_Event_Actions (
+      event_lu_name_          IN VARCHAR2,
+      event_id_               IN VARCHAR2,
+      action_number_          IN NUMBER,
+      action_enable_          IN VARCHAR2,
+      action_parameters_      IN CLOB,
+      condition_type_         IN VARCHAR2,
+      condition_value_        IN VARCHAR2,
+      definition_modified_date_  IN DATE,
+      fnd_event_action_type_  IN VARCHAR2,
+      description_            IN VARCHAR2,
+      subscribable_           IN VARCHAR2,
+      system_defined_         IN VARCHAR2,
+      role_                   IN VARCHAR2,
+      rowkey_                 IN VARCHAR2 )
+   IS
+   BEGIN
+      info_msg_ := NULL;
+      info_msg_ := Message_SYS.Construct('FND_EVENT_ACTION_TAB');
+      Message_SYS.Add_Attribute(info_msg_, 'EVENT_LU_NAME', event_lu_name_);
+      Message_SYS.Add_Attribute(info_msg_, 'EVENT_ID', event_id_);
+      Message_SYS.Add_Attribute(info_msg_, 'ACTION_NUMBER', action_number_);
+      Message_SYS.Add_Attribute(info_msg_, 'ACTION_ENABLE', action_enable_);
+      Message_SYS.Add_Clob_Attribute(info_msg_, 'ACTION_PARAMETERS', to_char(action_parameters_));
+      Message_SYS.Add_Attribute(info_msg_, 'CONDITION_TYPE', condition_type_);
+      Message_SYS.Add_Attribute(info_msg_, 'CONDITION_VALUE', condition_value_);
+      Message_SYS.Add_Attribute(info_msg_, 'DEFINITION_MODIFIED_DATE', definition_modified_date_);
+      Message_SYS.Add_Attribute(info_msg_, 'FND_EVENT_ACTION_TYPE', fnd_event_action_type_);
+      Message_SYS.Add_Attribute(info_msg_, 'DESCRIPTION', description_);
+      Message_SYS.Add_Attribute(info_msg_, 'SUBSCRIBABLE', subscribable_);
+      Message_SYS.Add_Attribute(info_msg_, 'SYSTEM_DEFINED', system_defined_);
+      Message_SYS.Add_Attribute(info_msg_, 'ROLE', role_);
+      Message_SYS.Add_Attribute(info_msg_, 'ROWKEY', rowkey_);
+      Fnd_Event_Action_API.Register(info_msg_);
+   END;
+BEGIN
+   Import_Event_Actions( Database_SYS.Unistr('OrderQuotation'),
+                         Database_SYS.Unistr('LAF_COM_011'), 
+                         Database_SYS.Unistr('0'),
+                         Database_SYS.Unistr('TRUE'), 
+                         Database_SYS.Unistr('!FNDSER.EVENT_ACTION_PARAM'||CHR(10)||'$SQL='||CHR(10)||'-'||CHR(10)||'-DECLARE'||
+                         ''||CHR(10)||'-   -- p0 -> i_hWndFrame.frmOrderQuotation_Ext.dfsShipAddrCountryCode'||
+                         ''||CHR(10)||'-   p0_ VARCHAR2(32000) := ''BR'';'||CHR(10)||'-'||CHR(10)||'-   -- p1 -> i_h'||
+                         'WndFrame.frmOrderQuotation_Ext.lsDisplayLayout'||CHR(10)||'-   p1_ VARCHAR2(32000) := '''''||
+                         ';'||CHR(10)||'-'||CHR(10)||'-   -- p2 -> i_hWndFrame.frmOrderQuotation_Ext.lsEditLayout'||
+                         ''||CHR(10)||'-   p2_ VARCHAR2(32000) := '''';'||CHR(10)||'-'||CHR(10)||'-BEGIN'||
+                         ''||CHR(10)||'-    IFSLAF.Log_SYS.Init_Debug_Session_(''bp'');'||CHR(10)||'-    '||
+                         ''||CHR(10)||'-DECLARE layouts_ IFSLAF.Address_Presentation_API.Public_Rec;'||CHR(10)||'-  '||
+                         '  BEGIN'||CHR(10)||'- layouts_ := IFSLAF.Address_Presentation_API.Get_Layouts(p0_ );'||
+                         ''||CHR(10)||'-    p1_ := layouts_.display_layout;'||CHR(10)||'-    p2_ := layouts_.edit_la'||
+                         'yout;'||CHR(10)||'-    END;'||CHR(10)||'-'||CHR(10)||'-   '||CHR(10)||'-'||CHR(10)||'-END;'||
+                         ''||CHR(10)||'-'||CHR(10)||'-'||CHR(10)||'-'||CHR(10)||'-DECLARE'||CHR(10)||'-   -- p0 -> _'||
+                         '_lsResult'||CHR(10)||'-   p0_ VARCHAR2(32000) := NULL;'||CHR(10)||'-'||CHR(10)||'-   -- p1'||
+                         ' -> __sObjid'||CHR(10)||'-   p1_ VARCHAR2(32000) := '''';'||CHR(10)||'-'||CHR(10)||'-   --'||
+                         ' p2 -> __lsObjversion'||CHR(10)||'-   p2_ VARCHAR2(32000) := '''';'||CHR(10)||'-'||
+                         ''||CHR(10)||'-   -- p3 -> __lsAttr'||CHR(10)||'-   p3_ VARCHAR2(32000) := ''CASE_ID''||chr'||
+                         '(31)||''''||chr(30)||''TASK_ID''||chr(31)||''700''||chr(30)||''ACTIVITY_NAME''||chr(31)||'||
+                         '''ANALISE DE CREDITO''||chr(30)||''TASK_ACTIVITY_ID''||chr(31)||''160''||chr(30)||''TASK_T'||
+                         'YPE_ID''||chr(31)||''PADRAO''||chr(30)||''OWNER''||chr(31)||''IFSLAF''||chr(30)||''SEVERIT'||
+                         'Y_ID''||chr(31)||''PADRAO''||chr(30)||''PLANNED_HOUR''||chr(31)||''''||chr(30)||''USED_HOU'||
+                         'R''||chr(31)||''0''||chr(30)||''INVOICABLE''||chr(31)||''FALSE''||chr(30);'||CHR(10)||'-'||
+                         ''||CHR(10)||'-   -- p4 -> __sAction'||CHR(10)||'-   p4_ VARCHAR2(32000) := ''CHECK'';'||
+                         ''||CHR(10)||'-'||CHR(10)||'-BEGIN'||CHR(10)||'-    IFSLAF.Log_SYS.Init_Debug_Session_(''bp'||
+                         ''');'||CHR(10)||'-    '||CHR(10)||'-IFSLAF.CC_CASE_TASK_API.NEW__( p0_ , p1_ , p2_ , p3_ ,'||
+                         ' p4_ );'||CHR(10)||'-'||CHR(10)||'-'||CHR(10)||'-END;'||CHR(10)||'-'||CHR(10)||'-'||
+                         ''||CHR(10)||'-DECLARE'||CHR(10)||'-   -- p0 -> __lsResult'||CHR(10)||'-   p0_ VARCHAR2(320'||
+                         '00) := NULL;'||CHR(10)||'-'||CHR(10)||'-   -- p1 -> __sObjid'||CHR(10)||'-   p1_ VARCHAR2('||
+                         '32000) := ''AAASrTAAGAAAB+eAAL'';'||CHR(10)||'-'||CHR(10)||'-   -- p2 -> __lsObjversion'||
+                         ''||CHR(10)||'-   p2_ VARCHAR2(32000) := ''20201001113102'';'||CHR(10)||'-'||CHR(10)||'-   '||
+                         '-- p3 -> __lsAttr'||CHR(10)||'-   p3_ VARCHAR2(32000) := ''CASE_ID''||chr(31)||''100012''|'||
+                         '|chr(30)||''TASK_ID''||chr(31)||''700''||chr(30)||''ACTIVITY_NAME''||chr(31)||''ANALISE DE'||
+                         ' CREDITO''||chr(30)||''TASK_ACTIVITY_ID''||chr(31)||''160''||chr(30)||''TASK_TYPE_ID''||ch'||
+                         'r(31)||''PADRAO''||chr(30)||''OWNER''||chr(31)||''IFSLAF''||chr(30)||''SEVERITY_ID''||chr('||
+                         '31)||''PADRAO''||chr(30)||''PLANNED_HOUR''||chr(31)||''''||chr(30)||''USED_HOUR''||chr(31)'||
+                         '||''0''||chr(30)||''INVOICABLE''||chr(31)||''FALSE''||chr(30);'||CHR(10)||'-'||CHR(10)||'-'||
+                         '   -- p4 -> __sAction'||CHR(10)||'-   p4_ VARCHAR2(32000) := ''DO'';'||CHR(10)||'-'||
+                         ''||CHR(10)||'-BEGIN'||CHR(10)||'-    IFSLAF.Log_SYS.Init_Debug_Session_(''bp'');'||
+                         ''||CHR(10)||'-    '||CHR(10)||'-IFSLAF.CC_CASE_TASK_API.NEW__( p0_ , p1_ , p2_ , p3_ , p4_'||
+                         ' );'||CHR(10)||'-'||CHR(10)||'-   ----------------------------------'||CHR(10)||'-   ---Db'||
+                         'ms_Output Section---'||CHR(10)||'-   ----------------------------------'||CHR(10)||'-   Db'||
+                         'ms_Output.Put_Line(''p0_ -> __lsResult'');'||CHR(10)||'-   Dbms_Output.Put_Line(p0_);'||
+                         ''||CHR(10)||'-   Dbms_Output.New_Line;'||CHR(10)||'-'||CHR(10)||'-   Dbms_Output.Put_Line('||
+                         '''p1_ -> __sObjid'');'||CHR(10)||'-   Dbms_Output.Put_Line(p1_);'||CHR(10)||'-   Dbms_Outp'||
+                         'ut.New_Line;'||CHR(10)||'-'||CHR(10)||'-   Dbms_Output.Put_Line(''p2_ -> __lsObjversion'')'||
+                         ';'||CHR(10)||'-   Dbms_Output.Put_Line(p2_);'||CHR(10)||'-   Dbms_Output.New_Line;'||
+                         ''||CHR(10)||'-'||CHR(10)||'-   Dbms_Output.Put_Line(''p3_ -> __lsAttr'');'||CHR(10)||'-   '||
+                         'Dbms_Output.Put_Line(p3_);'||CHR(10)||'-   Dbms_Output.New_Line;'||CHR(10)||'-'||
+                         ''||CHR(10)||'-   Dbms_Output.Put_Line(''p4_ -> __sAction'');'||CHR(10)||'-   Dbms_Output.P'||
+                         'ut_Line(p4_);'||CHR(10)||'-   ----------------------------------'||CHR(10)||'-'||
+                         ''||CHR(10)||'-END;'||CHR(10)||'-'||CHR(10)||'-BEGIN '||CHR(10)||'-:p0 := '||CHR(38)||'AO.C'||
+                         'c_Case_Task_Activity_Api.Get_Dispatch(:p1 ); '||CHR(10)||'-EXCEPTION '||CHR(10)||'-WHEN '||
+                         ''||CHR(38)||'AO.Error_SYS.Err_Security_Checkpoint THEN '||CHR(10)||'-raise; '||CHR(10)||'-'||
+                         'WHEN OTHERS THEN '||CHR(10)||'-rollback; '||CHR(10)||'-raise; '||CHR(10)||'-END;'||
+                         ''||CHR(10)||'-'||CHR(10)||'-'||CHR(10)||'-'||CHR(10)||'-DECLARE'||CHR(10)||'-   -- p0 -> i'||
+                         '_hWndFrame.frmOrderQuotation_Ext.sHsnSacCode'||CHR(10)||'-   p0_ VARCHAR2(32000) := ''N'';'||
+                         ''||CHR(10)||'-'||CHR(10)||'-   -- p1 -> i_hWndFrame.frmOrderQuotation_Ext.dfsContract'||
+                         ''||CHR(10)||'-   p1_ VARCHAR2(32000) := ''01'';'||CHR(10)||'-'||CHR(10)||'-BEGIN'||
+                         ''||CHR(10)||'-    IFSLAF.Log_SYS.Init_Debug_Session_(''bp'');'||CHR(10)||'-    '||
+                         ''||CHR(10)||'-p0_ := IFSLAF.Company_Localization_API.Get_Parameter_Val_From_Site_Db(p1_ , '||
+                         '''IN_HSN_SAC_CODES'');'||CHR(10)||'-'||CHR(10)||'-   ----------------------------------'||
+                         ''||CHR(10)||'-   ---Dbms_Output Section---'||CHR(10)||'-   -------------------------------'||
+                         '---'||CHR(10)||'-   Dbms_Output.Put_Line(''p0_ -> i_hWndFrame.frmOrderQuotation_Ext.sHsnSa'||
+                         'cCode'');'||CHR(10)||'-   Dbms_Output.Put_Line(p0_);'||CHR(10)||'-   Dbms_Output.New_Line;'||
+                         ''||CHR(10)||'-'||CHR(10)||'-   Dbms_Output.Put_Line(''p1_ -> i_hWndFrame.frmOrderQuotation'||
+                         '_Ext.dfsContract'');'||CHR(10)||'-   Dbms_Output.Put_Line(p1_);'||CHR(10)||'-   ----------'||
+                         '------------------------'||CHR(10)||'-'||CHR(10)||'-END;'||CHR(10)||'-'||CHR(10)||'-'||
+                         ''||CHR(10)||'-'||CHR(10)||'-'||CHR(10)||'-DECLARE'||CHR(10)||'-   -- p0 -> i_hWndFrame.frm'||
+                         'CaseHeader.lsTmp'||CHR(10)||'-   p0_ VARCHAR2(32000) := NULL;'||CHR(10)||'-'||CHR(10)||'- '||
+                         '  -- p1 -> i_hWndFrame.frmCaseHeader.dfsOrganizationId'||CHR(10)||'-   p1_ VARCHAR2(32000)'||
+                         ' := ''Processo Comercial'';'||CHR(10)||'-'||CHR(10)||'-   -- p2 -> i_hWndFrame.frmCaseHead'||
+                         'er.lsTmp2'||CHR(10)||'-   p2_ VARCHAR2(32000) := NULL;'||CHR(10)||'-'||CHR(10)||'-   -- p3'||
+                         ' -> i_hWndFrame.frmCaseHeader.dfsAccQueueOrgId'||CHR(10)||'-   p3_ VARCHAR2(32000) := '''''||
+                         ';'||CHR(10)||'-'||CHR(10)||'-   -- p4 -> i_hWndFrame.frmCaseHeader.sCheckAcceptCase'||
+                         ''||CHR(10)||'-   p4_ VARCHAR2(32000) := ''FALSE'';'||CHR(10)||'-'||CHR(10)||'-   -- p5 -> '||
+                         'i_hWndFrame.frmCaseHeader.dfnCaseId'||CHR(10)||'-   p5_ FLOAT := 100012;'||CHR(10)||'-'||
+                         ''||CHR(10)||'-   -- p6 -> i_hWndFrame.frmCaseHeader.sFlashMsgExt'||CHR(10)||'-   p6_ VARCH'||
+                         'AR2(32000) := ''FALSE'';'||CHR(10)||'-'||CHR(10)||'-BEGIN'||CHR(10)||'-    IFSLAF.Log_SYS.'||
+                         'Init_Debug_Session_(''bp'');'||CHR(10)||'-    '||CHR(10)||'-DECLARE BEGIN'||CHR(10)||'- p0'||
+                         '_ := IFSLAF.Iso_Time_Zone_API.Get_Description(IFSLAF.Cc_Case_Support_Site_API.Get_Time_Zon'||
+                         'e(p1_ ));'||CHR(10)||'-    p2_ := IFSLAF.Iso_Time_Zone_API.Get_Description(IFSLAF.Cc_Case_'||
+                         'Support_Site_API.Get_Time_Zone(p3_ ));'||CHR(10)||'-    p4_ := IFSLAF.Cc_Case_Utility_Api.'||
+                         'Check_Accept_Case(p5_ );'||CHR(10)||'-    p6_ := IFSLAF.Cc_Case_Api.Flash_Message_Exist(p5'||
+                         '_ );'||CHR(10)||'-    END;'||CHR(10)||'-'||CHR(10)||'- '||CHR(10)||'-'||CHR(10)||'-END;'||
+                         ''||CHR(10)||'-'||CHR(10)||'-'||CHR(10)||'-'||CHR(10)||'-DECLARE'||CHR(10)||'-   -- p0 -> i'||
+                         '_hWndFrame.frmOrderQuotation_Ext.nTotalChargeBase'||CHR(10)||'-   p0_ FLOAT := 0;'||
+                         ''||CHR(10)||'-'||CHR(10)||'-   -- p1 -> i_hWndFrame.frmOrderQuotation_Ext.sQuotationNo'||
+                         ''||CHR(10)||'-   p1_ VARCHAR2(32000) := ''*1032'';'||CHR(10)||'-'||CHR(10)||'-   -- p2 -> '||
+                         'i_hWndFrame.frmOrderQuotation_Ext.nTotalCharge'||CHR(10)||'-   p2_ FLOAT := 0;'||
+                         ''||CHR(10)||'-'||CHR(10)||'-   -- p3 -> i_hWndFrame.frmOrderQuotation_Ext.nTotalChargeGros'||
+                         's'||CHR(10)||'-   p3_ FLOAT := 0;'||CHR(10)||'-'||CHR(10)||'-   -- p4 -> i_hWndFrame.frmOr'||
+                         'derQuotation_Ext.nTotalChaTax'||CHR(10)||'-   p4_ FLOAT := 0;'||CHR(10)||'-'||CHR(10)||'-B'||
+                         'EGIN'||CHR(10)||'-    IFSLAF.Log_SYS.Init_Debug_Session_(''bp'');'||CHR(10)||'-    '||
+                         ''||CHR(10)||'-p0_ := IFSLAF.Order_Quotation_API.Get_Total_Base_Charge__(p1_ );'||
+                         ''||CHR(10)||'-    p2_ := IFSLAF.Order_Quotation_API.Get_Total_Sale_Charge__(p1_ );'||
+                         ''||CHR(10)||'-    p3_ := IFSLAF.Order_Quotation_API.Get_Total_Sale_Charge_Gross__(p1_ );'||
+                         ''||CHR(10)||'-    p4_ := IFSLAF.Order_Quotation_API.Get_Tot_Charge_Sale_Tax_Amt(p1_ );'||
+                         ''||CHR(10)||'-'||CHR(10)||'-   '||CHR(10)||'-'||CHR(10)||'-END;'||CHR(10)||'$ATTACH=!ATTAC'||
+                         'HMENTS'||CHR(10)||''),
+                         Database_SYS.Unistr('!EVENT_ACTION_COND_TYPE'||CHR(10)||'$NEW:BUSINESS_OPPORTUNITY_NO='||CHR(10)||'$NEW:QUOTATI'||
+                         'ON_NO='||CHR(10)||'$NEW:ROWSTATE=='||CHR(10)||'$CASE_LOCAL_ID='||CHR(10)||''), 
+                         Database_SYS.Unistr('!EVENT_ACTION_COND_VALUE'||CHR(10)||'$NEW:BUSINESS_OPPORTUNITY_NO='||CHR(10)||'$NEW:QUOTAT'||
+                         'ION_NO='||CHR(10)||'$NEW:ROWSTATE=Released'||CHR(10)||'$CASE_LOCAL_ID='||CHR(10)||''),
+                         To_Date(Database_SYS.Unistr('2020-10-09-14.36.02'), 'YYYY-MM-DD-HH24.MI.SS'),
+                         Database_SYS.Unistr('EXECUTEONLINESQL'), 
+                         Database_SYS.Unistr('\F0A7 Criar uma nova atividade na aba Processo comercial (caso)'||CHR(10)||'\F0A7 No Campo \201CACTIV'||
+                         'ITY_NAME\201D selecionar a atividade \201CANALISE DE CREDITO\201D'), 
+                         Database_SYS.Unistr('FALSE'), 
+                         Database_SYS.Unistr('FALSE'), 
+                         Database_SYS.Unistr(''), 
+                         Database_SYS.Unistr('B08E93A805E41102E053840110ACAE21'));
+END;
+/
+COMMIT
+/
+SET DEFINE ON
+

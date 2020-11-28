@@ -1,0 +1,108 @@
+SET DEFINE OFF
+
+DECLARE
+   info_msg_   CLOB;
+   PROCEDURE Import_Event_Actions (
+      event_lu_name_          IN VARCHAR2,
+      event_id_               IN VARCHAR2,
+      action_number_          IN NUMBER,
+      action_enable_          IN VARCHAR2,
+      action_parameters_      IN CLOB,
+      condition_type_         IN VARCHAR2,
+      condition_value_        IN VARCHAR2,
+      definition_modified_date_  IN DATE,
+      fnd_event_action_type_  IN VARCHAR2,
+      description_            IN VARCHAR2,
+      subscribable_           IN VARCHAR2,
+      system_defined_         IN VARCHAR2,
+      role_                   IN VARCHAR2,
+      rowkey_                 IN VARCHAR2 )
+   IS
+   BEGIN
+      info_msg_ := NULL;
+      info_msg_ := Message_SYS.Construct('FND_EVENT_ACTION_TAB');
+      Message_SYS.Add_Attribute(info_msg_, 'EVENT_LU_NAME', event_lu_name_);
+      Message_SYS.Add_Attribute(info_msg_, 'EVENT_ID', event_id_);
+      Message_SYS.Add_Attribute(info_msg_, 'ACTION_NUMBER', action_number_);
+      Message_SYS.Add_Attribute(info_msg_, 'ACTION_ENABLE', action_enable_);
+      Message_SYS.Add_Clob_Attribute(info_msg_, 'ACTION_PARAMETERS', to_char(action_parameters_));
+      Message_SYS.Add_Attribute(info_msg_, 'CONDITION_TYPE', condition_type_);
+      Message_SYS.Add_Attribute(info_msg_, 'CONDITION_VALUE', condition_value_);
+      Message_SYS.Add_Attribute(info_msg_, 'DEFINITION_MODIFIED_DATE', definition_modified_date_);
+      Message_SYS.Add_Attribute(info_msg_, 'FND_EVENT_ACTION_TYPE', fnd_event_action_type_);
+      Message_SYS.Add_Attribute(info_msg_, 'DESCRIPTION', description_);
+      Message_SYS.Add_Attribute(info_msg_, 'SUBSCRIBABLE', subscribable_);
+      Message_SYS.Add_Attribute(info_msg_, 'SYSTEM_DEFINED', system_defined_);
+      Message_SYS.Add_Attribute(info_msg_, 'ROLE', role_);
+      Message_SYS.Add_Attribute(info_msg_, 'ROWKEY', rowkey_);
+      Fnd_Event_Action_API.Register(info_msg_);
+   END;
+BEGIN
+   Import_Event_Actions( Database_SYS.Unistr('BusinessOpportunity'),
+                         Database_SYS.Unistr('LAF_COM_003'), 
+                         Database_SYS.Unistr('0'),
+                         Database_SYS.Unistr('TRUE'), 
+                         Database_SYS.Unistr('!FNDSER.EVENT_ACTION_PARAM'||CHR(10)||'$SQL=DECLARE'||CHR(10)||'-'||CHR(10)||'-  p0_ VARCH'||
+                         'AR2(32000) := NULL; -- p0 -> __lsResult'||CHR(10)||'-  p1_ VARCHAR2(32000) := NULL; -- p1 '||
+                         '-> __sObjid'||CHR(10)||'-  p2_ VARCHAR2(32000) := NULL; -- p2 -> __lsObjversion'||
+                         ''||CHR(10)||'-  p3_ VARCHAR2(32000) := NULL; -- p3 -> __lsAttr'||CHR(10)||'-  p4_ VARCHAR2'||
+                         '(32000) := ''DO''; -- p4 -> __sAction'||CHR(10)||'-'||CHR(10)||'-  r0_ VARCHAR2(32000) := '||
+                         'NULL; -- r0 -> __lsResult'||CHR(10)||'-  r1_ VARCHAR2(32000) := NULL; -- r1 -> __sObjid'||
+                         ''||CHR(10)||'-  r2_ VARCHAR2(32000) := NULL; -- r2 -> __g_Bind.s[0]'||CHR(10)||'-  r3_ VAR'||
+                         'CHAR2(32000) := ''CLIENT_NLS_LANG'' || chr(31) || '''' || chr(30); -- r3 -> __lsAttr'||
+                         ''||CHR(10)||'-  r4_ VARCHAR2(32000) := ''DO''; -- r4 -> __sAction'||CHR(10)||'-  '||
+                         ''||CHR(10)||'-  case_id_ VARCHAR2(32000);'||CHR(10)||'-  '||CHR(10)||'-  CURSOR GET_CASE I'||
+                         'S'||CHR(10)||'-  SELECT CASE_LOCAL_ID FROM CC_CASE_CFV'||CHR(10)||'-  WHERE CF$_OPORTUNIDA'||
+                         'DE = :i_hWndFrame.frmOpportunity.dfsOpportunityNo;'||CHR(10)||'-'||CHR(10)||'-BEGIN'||
+                         ''||CHR(10)||'-  '||CHR(10)||'-OPEN GET_CASE;'||CHR(10)||'-FETCH GET_CASE INTO case_id_;'||
+                         ''||CHR(10)||'-CLOSE GET_CASE;'||CHR(10)||'-'||CHR(10)||'-IF case_id_ IS NULL THEN'||
+                         ''||CHR(10)||'-'||CHR(10)||'-'||CHR(10)||'-  p3_ := ''TYPE_ID'' || chr(31) || ''Global'' ||'||
+                         ' chr(30) || ''TITLE'' || chr(31) || '''||CHR(38)||'NEW:DESCRIPTION'''||CHR(10)||'-        '||
+                         '  || chr(30) || ''CASE_CATEGORY_ID'' || chr(31) || '''' ||'||CHR(10)||'-         chr(30) |'||
+                         '| ''EXPECTED_RESPONSE_DATE'' || chr(31) ||'||CHR(10)||'-         ''2020-07-29-11.26.07'' |'||
+                         '| chr(30) || ''OUR_PRIORITY'' || chr(31) ||'||CHR(10)||'-         ''NENHUM'' || chr(30) ||'||
+                         ' ''OUR_SEVERITY'' || chr(31) || ''NENHUM'' ||'||CHR(10)||'-         chr(30) || ''CUSTOMER_'||
+                         'ID'' || chr(31) || '||CHR(38)||'NEW:CUSTOMER_ID || chr(30) ||'||CHR(10)||'-         ''SHOW'||
+                         '_EXTERNALLY'' || chr(31) || ''TRUE'' || chr(30) || ''FOCUS_ID'' ||'||CHR(10)||'-         c'||
+                         'hr(31) || ''EM ANALISE'' || chr(30) || ''CONTACT_DATE'' || chr(31) ||'||CHR(10)||'-       '||
+                         '  ''2020-07-29-11.26.07'' || chr(30) || ''CUSTOMER_SEVERITY'' || chr(31) || '''' ||'||
+                         ''||CHR(10)||'-         chr(30) || ''PROJECT_ID'' || chr(31) || '''' || chr(30) ||'||
+                         ''||CHR(10)||'-         ''SUPPORT_KEY'' || chr(31) || '''' || chr(30) || ''SUPPORT_LEVEL_ID'||
+                         ''' ||'||CHR(10)||'-         chr(31) || '''' || chr(30) || ''REACTION_TIME'' || chr(31) || '||
+                         ''''' ||'||CHR(10)||'-         chr(30) || ''RESPONSE_INTERVALL'' || chr(31) || '''' || chr('||
+                         '30) ||'||CHR(10)||'-         ''RESPONSE_TIME1'' || chr(31) || '''' || chr(30) || ''RESPONS'||
+                         'E_TIME2'' ||'||CHR(10)||'-         chr(31) || '''' || chr(30) || ''RESPONSE_TIME3'' || chr'||
+                         '(31) || '''' ||'||CHR(10)||'-         chr(30) || ''RESPONSE_TIME4'' || chr(31) || '''' || '||
+                         'chr(30) ||'||CHR(10)||'-         ''COMMENTS'' || chr(31) || ''O Cliente n\00E3o possui Contrat'||
+                         'o v\00E1lido. O Cliente n\00E3o possui Contrato v\00E1lido.'' || chr(30) ||'||CHR(10)||'-         ''CL'||
+                         'IENT_NLS_LANG'' || chr(31) || '''' || chr(30) || ''TEMPLATE_ID'' ||'||CHR(10)||'-         '||
+                         'chr(31) || '''' || chr(30);'||CHR(10)||'-'||CHR(10)||'-  IFSLAF.CC_CASE_API.NEW__(p0_, p1_'||
+                         ', p2_, p3_, p4_);'||CHR(10)||'-'||CHR(10)||'-  ----------------------------------'||
+                         ''||CHR(10)||'-  ---Dbms_Output Section---'||CHR(10)||'-  ---------------------------------'||
+                         '-'||CHR(10)||'-'||CHR(10)||'-  Dbms_Output.Put_Line(''p1_ -> __sObjid'');'||CHR(10)||'-  D'||
+                         'bms_Output.Put_Line(p1_);'||CHR(10)||'-  Dbms_Output.New_Line;'||CHR(10)||'-'||CHR(10)||'-'||
+                         '  ----------------------------------'||CHR(10)||'-  r1_ := p1_;'||CHR(10)||'-  r2_ := ''CF'||
+                         '$_OPORTUNIDADE'' || chr(31) || '||CHR(38)||'NEW:OPPORTUNITY_NO  || chr(30);'||CHR(10)||'-'||
+                         ''||CHR(10)||'-  IFSLAF.CC_CASE_CFP.Cf_Modify__(r0_, r1_, r2_, r3_, r4_);'||CHR(10)||'-  '||
+                         ''||CHR(10)||'-  ELSE raise_application_error(-20100,''J\00E1 existe um chamado aberto para est'||
+                         'a oportunidade.'');'||CHR(10)||'-  '||CHR(10)||'-  END IF;'||CHR(10)||'-'||CHR(10)||'-END;'||
+                         ''||CHR(10)||'$ATTACH=!ATTACHMENTS'||CHR(10)||''),
+                         Database_SYS.Unistr('!EVENT_ACTION_COND_TYPE'||CHR(10)||'$OLD:ROWSTATE='||CHR(10)||'$NEW:CUSTOMER_ID='||
+                         ''||CHR(10)||'$NEW:DESCRIPTION='||CHR(10)||'$NEW:OPPORTUNITY_NO='||CHR(10)||'$NEW:ROWSTATE='||
+                         ''||CHR(10)||''), 
+                         Database_SYS.Unistr('!EVENT_ACTION_COND_VALUE'||CHR(10)||'$OLD:ROWSTATE='||CHR(10)||'$NEW:CUSTOMER_ID='||
+                         ''||CHR(10)||'$NEW:DESCRIPTION='||CHR(10)||'$NEW:OPPORTUNITY_NO='||CHR(10)||'$NEW:ROWSTATE='||
+                         ''||CHR(10)||''),
+                         To_Date(Database_SYS.Unistr('2020-11-16-08.13.15'), 'YYYY-MM-DD-HH24.MI.SS'),
+                         Database_SYS.Unistr('EXECUTEONLINESQL'), 
+                         Database_SYS.Unistr('CRIAR CASO JUNTAMENTE COM A CRI\00C7\00C3O DE OPORTUNIDADE'), 
+                         Database_SYS.Unistr('FALSE'), 
+                         Database_SYS.Unistr('FALSE'), 
+                         Database_SYS.Unistr(''), 
+                         Database_SYS.Unistr('AC0742DF72C65BBEE053830110AC531C'));
+END;
+/
+COMMIT
+/
+SET DEFINE ON
+

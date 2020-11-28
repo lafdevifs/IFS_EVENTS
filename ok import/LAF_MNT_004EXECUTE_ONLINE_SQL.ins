@@ -1,0 +1,72 @@
+SET DEFINE OFF
+
+DECLARE
+   info_msg_   CLOB;
+   PROCEDURE Import_Event_Actions (
+      event_lu_name_          IN VARCHAR2,
+      event_id_               IN VARCHAR2,
+      action_number_          IN NUMBER,
+      action_enable_          IN VARCHAR2,
+      action_parameters_      IN CLOB,
+      condition_type_         IN VARCHAR2,
+      condition_value_        IN VARCHAR2,
+      definition_modified_date_  IN DATE,
+      fnd_event_action_type_  IN VARCHAR2,
+      description_            IN VARCHAR2,
+      subscribable_           IN VARCHAR2,
+      system_defined_         IN VARCHAR2,
+      role_                   IN VARCHAR2,
+      rowkey_                 IN VARCHAR2 )
+   IS
+   BEGIN
+      info_msg_ := NULL;
+      info_msg_ := Message_SYS.Construct('FND_EVENT_ACTION_TAB');
+      Message_SYS.Add_Attribute(info_msg_, 'EVENT_LU_NAME', event_lu_name_);
+      Message_SYS.Add_Attribute(info_msg_, 'EVENT_ID', event_id_);
+      Message_SYS.Add_Attribute(info_msg_, 'ACTION_NUMBER', action_number_);
+      Message_SYS.Add_Attribute(info_msg_, 'ACTION_ENABLE', action_enable_);
+      Message_SYS.Add_Clob_Attribute(info_msg_, 'ACTION_PARAMETERS', to_char(action_parameters_));
+      Message_SYS.Add_Attribute(info_msg_, 'CONDITION_TYPE', condition_type_);
+      Message_SYS.Add_Attribute(info_msg_, 'CONDITION_VALUE', condition_value_);
+      Message_SYS.Add_Attribute(info_msg_, 'DEFINITION_MODIFIED_DATE', definition_modified_date_);
+      Message_SYS.Add_Attribute(info_msg_, 'FND_EVENT_ACTION_TYPE', fnd_event_action_type_);
+      Message_SYS.Add_Attribute(info_msg_, 'DESCRIPTION', description_);
+      Message_SYS.Add_Attribute(info_msg_, 'SUBSCRIBABLE', subscribable_);
+      Message_SYS.Add_Attribute(info_msg_, 'SYSTEM_DEFINED', system_defined_);
+      Message_SYS.Add_Attribute(info_msg_, 'ROLE', role_);
+      Message_SYS.Add_Attribute(info_msg_, 'ROWKEY', rowkey_);
+      Fnd_Event_Action_API.Register(info_msg_);
+   END;
+BEGIN
+   Import_Event_Actions( Database_SYS.Unistr('WorkOrder'),
+                         Database_SYS.Unistr('LAF_MNT_004'), 
+                         Database_SYS.Unistr('0'),
+                         Database_SYS.Unistr('TRUE'), 
+                         Database_SYS.Unistr('!FNDSER.EVENT_ACTION_PARAM'||CHR(10)||'$SQL=DECLARE'||CHR(10)||'- '||CHR(10)||'-  p0_ VARC'||
+                         'HAR2(32000) := NULL;'||CHR(10)||'-  p1_ VARCHAR2(32000) := NULL;'||CHR(10)||'-  p2_ VARCHA'||
+                         'R2(32000) := ''CF$_STATUS_EQUIPMENT'' || chr(31) || ''Dispon\00EDvel'' || chr(30);'||
+                         ''||CHR(10)||'-  p3_ VARCHAR2(32000) := ''REMOVE_REQUIREMENTS'' || chr(31) || ''FALSE'' || '||
+                         'chr(30);'||CHR(10)||'-  p4_ VARCHAR2(32000) := ''DO'';'||CHR(10)||'- '||CHR(10)||'-BEGIN'||
+                         ''||CHR(10)||'- '||CHR(10)||'-  SELECT objid'||CHR(10)||'-    INTO p1_'||CHR(10)||'-    FRO'||
+                         'M equipment_serial'||CHR(10)||'-   WHERE contract = '''||CHR(38)||'NEW:MCH_CODE_CONTRACT'''||
+                         '  AND mch_code = '''||CHR(38)||'NEW:MCH_CODE'';'||CHR(10)||'- '||CHR(10)||'-    IFSLAF.Log'||
+                         '_SYS.Init_Debug_Session_(''bp'');'||CHR(10)||'-    IFSLAF.EQUIPMENT_SERIAL_CFP.Cf_Modify__'||
+                         '(p0_, p1_, p2_, p3_, p4_);'||CHR(10)||'- '||CHR(10)||'-END; '||CHR(10)||'$ATTACH=!ATTACHME'||
+                         'NTS'||CHR(10)||''),
+                         Database_SYS.Unistr('!EVENT_ACTION_COND_TYPE'||CHR(10)||'$NEW:MCH_CODE='||CHR(10)||'$NEW:MCH_CODE_CONTRACT='||
+                         ''||CHR(10)||'$NEW:WORK_TYPE_ID=='||CHR(10)||'$STATUS=='||CHR(10)||''), 
+                         Database_SYS.Unistr('!EVENT_ACTION_COND_VALUE'||CHR(10)||'$NEW:MCH_CODE='||CHR(10)||'$NEW:MCH_CODE_CONTRACT='||
+                         ''||CHR(10)||'$NEW:WORK_TYPE_ID=COR'||CHR(10)||'$STATUS=No estoque'||CHR(10)||''),
+                         To_Date(Database_SYS.Unistr('2020-10-21-16.36.54'), 'YYYY-MM-DD-HH24.MI.SS'),
+                         Database_SYS.Unistr('EXECUTEONLINESQL'), 
+                         Database_SYS.Unistr('Altera\00E7\00E3o do status'), 
+                         Database_SYS.Unistr('FALSE'), 
+                         Database_SYS.Unistr('FALSE'), 
+                         Database_SYS.Unistr(''), 
+                         Database_SYS.Unistr('B22E8A88B83E5419E053840110AC1470'));
+END;
+/
+COMMIT
+/
+SET DEFINE ON
+

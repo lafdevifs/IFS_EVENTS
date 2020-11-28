@@ -1,0 +1,72 @@
+SET DEFINE OFF
+
+DECLARE
+   info_msg_   CLOB;
+   PROCEDURE Import_Event_Actions (
+      event_lu_name_          IN VARCHAR2,
+      event_id_               IN VARCHAR2,
+      action_number_          IN NUMBER,
+      action_enable_          IN VARCHAR2,
+      action_parameters_      IN CLOB,
+      condition_type_         IN VARCHAR2,
+      condition_value_        IN VARCHAR2,
+      definition_modified_date_  IN DATE,
+      fnd_event_action_type_  IN VARCHAR2,
+      description_            IN VARCHAR2,
+      subscribable_           IN VARCHAR2,
+      system_defined_         IN VARCHAR2,
+      role_                   IN VARCHAR2,
+      rowkey_                 IN VARCHAR2 )
+   IS
+   BEGIN
+      info_msg_ := NULL;
+      info_msg_ := Message_SYS.Construct('FND_EVENT_ACTION_TAB');
+      Message_SYS.Add_Attribute(info_msg_, 'EVENT_LU_NAME', event_lu_name_);
+      Message_SYS.Add_Attribute(info_msg_, 'EVENT_ID', event_id_);
+      Message_SYS.Add_Attribute(info_msg_, 'ACTION_NUMBER', action_number_);
+      Message_SYS.Add_Attribute(info_msg_, 'ACTION_ENABLE', action_enable_);
+      Message_SYS.Add_Clob_Attribute(info_msg_, 'ACTION_PARAMETERS', to_char(action_parameters_));
+      Message_SYS.Add_Attribute(info_msg_, 'CONDITION_TYPE', condition_type_);
+      Message_SYS.Add_Attribute(info_msg_, 'CONDITION_VALUE', condition_value_);
+      Message_SYS.Add_Attribute(info_msg_, 'DEFINITION_MODIFIED_DATE', definition_modified_date_);
+      Message_SYS.Add_Attribute(info_msg_, 'FND_EVENT_ACTION_TYPE', fnd_event_action_type_);
+      Message_SYS.Add_Attribute(info_msg_, 'DESCRIPTION', description_);
+      Message_SYS.Add_Attribute(info_msg_, 'SUBSCRIBABLE', subscribable_);
+      Message_SYS.Add_Attribute(info_msg_, 'SYSTEM_DEFINED', system_defined_);
+      Message_SYS.Add_Attribute(info_msg_, 'ROLE', role_);
+      Message_SYS.Add_Attribute(info_msg_, 'ROWKEY', rowkey_);
+      Fnd_Event_Action_API.Register(info_msg_);
+   END;
+BEGIN
+   Import_Event_Actions( Database_SYS.Unistr('InquirySupplier'),
+                         Database_SYS.Unistr('LAF_COM_004'), 
+                         Database_SYS.Unistr('0'),
+                         Database_SYS.Unistr('FALSE'), 
+                         Database_SYS.Unistr('!FNDSER.EVENT_ACTION_PARAM'||CHR(10)||'$SQL=DECLARE'||CHR(10)||'-'||CHR(10)||'-EXISTS_CNPJ'||
+                         '_ VARCHAR2(3200);'||CHR(10)||'-'||CHR(10)||'-CURSOR GET_EXISTS_CNPJ IS '||CHR(10)||'-SELEC'||
+                         'T CNPJ '||CHR(10)||'-FROM SUPPLIER_BR_TAX_INFO'||CHR(10)||'- WHERE SUPPLIER_ID ='||
+                         ''||CHR(38)||'NEW:VENDOR_NO '||CHR(10)||'-AND ADDRESS_ID = '||CHR(38)||'NEW:ADDR_NO'||
+                         ''||CHR(10)||'-AND CNPJ IS NOT NULL;'||CHR(10)||'-'||CHR(10)||'-'||CHR(10)||'-BEGIN'||
+                         ''||CHR(10)||'-'||CHR(10)||'-OPEN GET_EXISTS_CNPJ;'||CHR(10)||'-FETCH GET_EXISTS_CNPJ INTO '||
+                         'EXISTS_CNPJ_;'||CHR(10)||'-CLOSE GET_EXISTS_CNPJ;'||CHR(10)||'-'||CHR(10)||'-IF EXISTS_CNP'||
+                         'J IS NULL THEN'||CHR(10)||'-'||CHR(10)||'-RAISE_APPLICATION_ERROR(-20100, ''N\00C3O \00C9 POSS\00CDVEL'||
+                         ' CRIAR COTA\00C7\00C3O PARA O FORNECEDOR INFORMADO, CNPJ INV\00C1LIDO OU AUSENTE '');'||CHR(10)||'-'||
+                         ''||CHR(10)||'-END IF;'||CHR(10)||'-'||CHR(10)||'-END ;'||CHR(10)||'$ATTACH=!ATTACHMENTS'||
+                         ''||CHR(10)||''),
+                         Database_SYS.Unistr('!EVENT_ACTION_COND_TYPE'||CHR(10)||'$NEW:ADDR_NO='||CHR(10)||'$NEW:VENDOR_NO='||CHR(10)||''), 
+                         Database_SYS.Unistr('!EVENT_ACTION_COND_VALUE'||CHR(10)||'$NEW:ADDR_NO='||CHR(10)||'$NEW:VENDOR_NO='||
+                         ''||CHR(10)||''),
+                         To_Date(Database_SYS.Unistr('2020-11-18-16.10.29'), 'YYYY-MM-DD-HH24.MI.SS'),
+                         Database_SYS.Unistr('EXECUTEONLINESQL'), 
+                         Database_SYS.Unistr('impedir que seja criada uma cota\00E7\00E3o de compra caso o cnpj do fornecedor seja inv\00E1lido null'||
+                         ' ou sequencia de zeros'), 
+                         Database_SYS.Unistr('FALSE'), 
+                         Database_SYS.Unistr('FALSE'), 
+                         Database_SYS.Unistr(''), 
+                         Database_SYS.Unistr('AFB8751AEE6229BDE053840110AC6D11'));
+END;
+/
+COMMIT
+/
+SET DEFINE ON
+
