@@ -17,14 +17,11 @@ create or replace procedure laf_mnf_002(attr_ in varchar2) is
   -- p4 -> __sAction
   p4_ VARCHAR2(32000) := 'DO';
 
-  --number order
-  vorder_no_ varchar2(3200) := client_sys.Get_Item_Value('order_no', attr_);
-
   --serial_no equipment_serial
-  vserial_ varchar2(3200) := NULL;
+  vserial_ varchar2(3200) := client_sys.Get_Item_Value('serial_no', attr_);
 
   --part_no into equipment serial
-  vpart_no_ varchar(3200) := NULL;
+  vpart_no_ varchar(3200) := client_sys.Get_Item_Value('part_no', attr_);
 
   cursor modify_unic_serial is
     select ES.objid
@@ -33,13 +30,6 @@ create or replace procedure laf_mnf_002(attr_ in varchar2) is
        and es.SERIAL_NO = vserial_;
 
 begin
-
-  select sma.CF$_SERIAL_NO, sma.PART_NO
-    into vserial_, vpart_no_
-    from shop_material_alloc_cfv sma
-   where sma.ORDER_NO = vorder_no_
-     and CF$_SERIAL_NO != '*'
-     and CF$_SERIAL_NO is not null;
 
   open modify_unic_serial;
   loop
