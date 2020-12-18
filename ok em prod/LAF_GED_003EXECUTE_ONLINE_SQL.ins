@@ -1,0 +1,70 @@
+SET DEFINE OFF
+
+DECLARE
+   info_msg_   CLOB;
+   PROCEDURE Import_Event_Actions (
+      event_lu_name_          IN VARCHAR2,
+      event_id_               IN VARCHAR2,
+      action_number_          IN NUMBER,
+      action_enable_          IN VARCHAR2,
+      action_parameters_      IN CLOB,
+      condition_type_         IN VARCHAR2,
+      condition_value_        IN VARCHAR2,
+      definition_modified_date_  IN DATE,
+      fnd_event_action_type_  IN VARCHAR2,
+      description_            IN VARCHAR2,
+      subscribable_           IN VARCHAR2,
+      system_defined_         IN VARCHAR2,
+      role_                   IN VARCHAR2,
+      rowkey_                 IN VARCHAR2 )
+   IS
+   BEGIN
+      info_msg_ := NULL;
+      info_msg_ := Message_SYS.Construct('FND_EVENT_ACTION_TAB');
+      Message_SYS.Add_Attribute(info_msg_, 'EVENT_LU_NAME', event_lu_name_);
+      Message_SYS.Add_Attribute(info_msg_, 'EVENT_ID', event_id_);
+      Message_SYS.Add_Attribute(info_msg_, 'ACTION_NUMBER', action_number_);
+      Message_SYS.Add_Attribute(info_msg_, 'ACTION_ENABLE', action_enable_);
+      Message_SYS.Add_Clob_Attribute(info_msg_, 'ACTION_PARAMETERS', to_char(action_parameters_));
+      Message_SYS.Add_Attribute(info_msg_, 'CONDITION_TYPE', condition_type_);
+      Message_SYS.Add_Attribute(info_msg_, 'CONDITION_VALUE', condition_value_);
+      Message_SYS.Add_Attribute(info_msg_, 'DEFINITION_MODIFIED_DATE', definition_modified_date_);
+      Message_SYS.Add_Attribute(info_msg_, 'FND_EVENT_ACTION_TYPE', fnd_event_action_type_);
+      Message_SYS.Add_Attribute(info_msg_, 'DESCRIPTION', description_);
+      Message_SYS.Add_Attribute(info_msg_, 'SUBSCRIBABLE', subscribable_);
+      Message_SYS.Add_Attribute(info_msg_, 'SYSTEM_DEFINED', system_defined_);
+      Message_SYS.Add_Attribute(info_msg_, 'ROLE', role_);
+      Message_SYS.Add_Attribute(info_msg_, 'ROWKEY', rowkey_);
+      Fnd_Event_Action_API.Register(info_msg_);
+   END;
+BEGIN
+   Import_Event_Actions( Database_SYS.Unistr('DocIssue'),
+                         Database_SYS.Unistr('LAF_GED_003'), 
+                         Database_SYS.Unistr('0'),
+                         Database_SYS.Unistr('TRUE'), 
+                         Database_SYS.Unistr('!FNDSER.EVENT_ACTION_PARAM'||CHR(10)||'$SQL=declare'||CHR(10)||'-'||CHR(10)||'-  attr_ var'||
+                         'char2(32000);'||CHR(10)||'-'||CHR(10)||'-begin'||CHR(10)||'-'||CHR(10)||'-  client_sys.Add'||
+                         '_To_Attr(''DOC_CLASS'', '''||CHR(38)||'NEW:DOC_CLASS'', attr_);'||CHR(10)||'-  client_sys.'||
+                         'Add_To_Attr(''DOC_NO'', '''||CHR(38)||'NEW:DOC_NO'', attr_);'||CHR(10)||'-  client_sys.Add'||
+                         '_To_Attr(''DOC_SHEET'', '''||CHR(38)||'NEW:DOC_SHEET'', attr_);'||CHR(10)||'-  client_sys.'||
+                         'Add_To_Attr(''DOC_REV'', '''||CHR(38)||'NEW:DOC_REV'', attr_);'||CHR(10)||'-'||CHR(10)||'-'||
+                         '  transaction_SYS.Deferred_Call(''LAF_SAVE_DOC_FOLDER'','||CHR(10)||'-                    '||
+                         '            attr_,'||CHR(10)||'-                                ''Vincular Documento na Pa'||
+                         'sta'');'||CHR(10)||'-'||CHR(10)||'-end;'||CHR(10)||'$ATTACH=!ATTACHMENTS'||CHR(10)||''),
+                         Database_SYS.Unistr('!EVENT_ACTION_COND_TYPE'||CHR(10)||'$NEW:DOC_CLASS='||CHR(10)||'$NEW:DOC_NO='||CHR(10)||'$'||
+                         'NEW:DOC_REV='||CHR(10)||'$NEW:DOC_SHEET='||CHR(10)||''), 
+                         Database_SYS.Unistr('!EVENT_ACTION_COND_VALUE'||CHR(10)||'$NEW:DOC_CLASS='||CHR(10)||'$NEW:DOC_NO='||CHR(10)||''||
+                         '$NEW:DOC_REV='||CHR(10)||'$NEW:DOC_SHEET='||CHR(10)||''),
+                         To_Date(Database_SYS.Unistr('2020-10-09-14.32.32'), 'YYYY-MM-DD-HH24.MI.SS'),
+                         Database_SYS.Unistr('EXECUTEONLINESQL'), 
+                         Database_SYS.Unistr('SALVAR CLASSE NA PASTA ESPECIFICA'), 
+                         Database_SYS.Unistr('FALSE'), 
+                         Database_SYS.Unistr('FALSE'), 
+                         Database_SYS.Unistr(''), 
+                         Database_SYS.Unistr('AD9FED6C4A413D16E053840110AC1F9A'));
+END;
+/
+COMMIT
+/
+SET DEFINE ON
+

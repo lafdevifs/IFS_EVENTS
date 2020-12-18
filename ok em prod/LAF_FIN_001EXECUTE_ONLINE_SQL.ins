@@ -1,0 +1,143 @@
+SET DEFINE OFF
+
+DECLARE
+   info_msg_   CLOB;
+   PROCEDURE Import_Event_Actions (
+      event_lu_name_          IN VARCHAR2,
+      event_id_               IN VARCHAR2,
+      action_number_          IN NUMBER,
+      action_enable_          IN VARCHAR2,
+      action_parameters_      IN CLOB,
+      condition_type_         IN VARCHAR2,
+      condition_value_        IN VARCHAR2,
+      definition_modified_date_  IN DATE,
+      fnd_event_action_type_  IN VARCHAR2,
+      description_            IN VARCHAR2,
+      subscribable_           IN VARCHAR2,
+      system_defined_         IN VARCHAR2,
+      role_                   IN VARCHAR2,
+      rowkey_                 IN VARCHAR2 )
+   IS
+   BEGIN
+      info_msg_ := NULL;
+      info_msg_ := Message_SYS.Construct('FND_EVENT_ACTION_TAB');
+      Message_SYS.Add_Attribute(info_msg_, 'EVENT_LU_NAME', event_lu_name_);
+      Message_SYS.Add_Attribute(info_msg_, 'EVENT_ID', event_id_);
+      Message_SYS.Add_Attribute(info_msg_, 'ACTION_NUMBER', action_number_);
+      Message_SYS.Add_Attribute(info_msg_, 'ACTION_ENABLE', action_enable_);
+      Message_SYS.Add_Clob_Attribute(info_msg_, 'ACTION_PARAMETERS', to_char(action_parameters_));
+      Message_SYS.Add_Attribute(info_msg_, 'CONDITION_TYPE', condition_type_);
+      Message_SYS.Add_Attribute(info_msg_, 'CONDITION_VALUE', condition_value_);
+      Message_SYS.Add_Attribute(info_msg_, 'DEFINITION_MODIFIED_DATE', definition_modified_date_);
+      Message_SYS.Add_Attribute(info_msg_, 'FND_EVENT_ACTION_TYPE', fnd_event_action_type_);
+      Message_SYS.Add_Attribute(info_msg_, 'DESCRIPTION', description_);
+      Message_SYS.Add_Attribute(info_msg_, 'SUBSCRIBABLE', subscribable_);
+      Message_SYS.Add_Attribute(info_msg_, 'SYSTEM_DEFINED', system_defined_);
+      Message_SYS.Add_Attribute(info_msg_, 'ROLE', role_);
+      Message_SYS.Add_Attribute(info_msg_, 'ROWKEY', rowkey_);
+      Fnd_Event_Action_API.Register(info_msg_);
+   END;
+BEGIN
+   Import_Event_Actions( Database_SYS.Unistr('PaymentPlan'),
+                         Database_SYS.Unistr('LAF_FIN_001'), 
+                         Database_SYS.Unistr('0'),
+                         Database_SYS.Unistr('FALSE'), 
+                         Database_SYS.Unistr('!FNDSER.EVENT_ACTION_PARAM'||CHR(10)||'$SQL=DECLARE'||CHR(10)||'-'||CHR(10)||'-  TYPE_FIEL'||
+                         'D1_ VARCHAR2(10);'||CHR(10)||'-  TYPE_FIELD2_ VARCHAR2(10);'||CHR(10)||'-  P1_48_       VA'||
+                         'RCHAR(48); -- DIMES\00C3O DE CARACTERES NO PAYMENT '||CHR(38)||'NEW:PAYMENT_INFO1 COME\00C7ANDO CO'||
+                         'M DIGITO 8 = 48 CARACTERES'||CHR(10)||'-  P2_48_       VARCHAR(48); -- DIMES\00C3O DE CARACTER'||
+                         'ES NO PAYMENT '||CHR(38)||'NEW:PAYMENT_INFO2 COME\00C7ANDO COM DIGITO 8 = 48 CARACTERES'||
+                         ''||CHR(10)||'-  P2_47_       VARCHAR(47); -- DIMES\00C3O DE CARACTERES NO PAYMENT INFO 2 N\00C3O C'||
+                         'OME\00C7ANDO COM DIGITO 8 = 47 CARACTERES'||CHR(10)||'-  P1_44_       VARCHAR(44); -- DIMES\00C3O '||
+                         'DE CARACTERES NO PAYMENT INFO 1 N\00C3O COME\00C7ANDO COM DIGITO 8 = 44 CARACTERES'||CHR(10)||'-'||
+                         ''||CHR(10)||'-  -- DETERMINANDO TIPO DE CARACTERES INSERIDOS NO PAYMENT INFO'||CHR(10)||'-'||
+                         ''||CHR(10)||'-  CURSOR GET_TYPE_FIELD1 IS'||CHR(10)||'-    SELECT case'||CHR(10)||'-      '||
+                         '       when trim(TRANSLATE('''||CHR(38)||'NEW:PAYMENT_INFO1'', ''0123456789'', '' '')) is '||
+                         'not null then'||CHR(10)||'-              ''alpha'''||CHR(10)||'-             when '''||
+                         ''||CHR(38)||'NEW:PAYMENT_INFO1'' is null then'||CHR(10)||'-              ''vazio'''||
+                         ''||CHR(10)||'-             else'||CHR(10)||'-              ''numeric'''||CHR(10)||'-      '||
+                         '     end'||CHR(10)||'-      FROM DUAL;'||CHR(10)||'-'||CHR(10)||'-  CURSOR GET_TYPE_FIELD2'||
+                         ' IS'||CHR(10)||'-  '||CHR(10)||'-    SELECT case'||CHR(10)||'-             when trim(TRANS'||
+                         'LATE('''||CHR(38)||'NEW:PAYMENT_INFO2'', ''0123456789'', '' '')) is not null then'||
+                         ''||CHR(10)||'-              ''alpha'''||CHR(10)||'-             when '''||CHR(38)||'NEW:PA'||
+                         'YMENT_INFO2'' is null then'||CHR(10)||'-              ''vazio'''||CHR(10)||'-             '||
+                         'else'||CHR(10)||'-              ''numeric'''||CHR(10)||'-           end'||CHR(10)||'-     '||
+                         ' FROM DUAL;'||CHR(10)||'-'||CHR(10)||'-  -- FIM TIPO DE CARACTERE NO PAYMENTE INFO'||
+                         ''||CHR(10)||'-'||CHR(10)||'-  -- VERIFICAR SE O CAMPO PAYMENT INFO COMECA DIGITO 8 PAYMENT'||
+                         '_'||CHR(38)||'NEW:PAYMENT_INFO1'||CHR(10)||'-'||CHR(10)||'-  CURSOR GET_P1_48 IS'||
+                         ''||CHR(10)||'-    SELECT 1'||CHR(10)||'-      FROM DUAL'||CHR(10)||'-     WHERE '''||
+                         ''||CHR(38)||'NEW:PAYMENT_INFO1'' LIKE ''8%'''||CHR(10)||'-       AND length('''||
+                         ''||CHR(38)||'NEW:PAYMENT_INFO1'') = 48;'||CHR(10)||'-'||CHR(10)||'-  -- FIM DE VERIFICACAO'||
+                         ' DE VARI\00C1VEL COME\00C7ANDO COM CARACTER 8 PAYMENT_'||CHR(38)||'NEW:PAYMENT_INFO1'||CHR(10)||'-'||
+                         ''||CHR(10)||'-  -- VERIFICAR SE O CAMPO PAYMENT INFO COMECA DIGITO 8 PAYMENT_'||CHR(38)||''||
+                         'NEW:PAYMENT_INFO2'||CHR(10)||'-'||CHR(10)||'-  CURSOR GET_P2_48 IS'||CHR(10)||'-    SELECT'||
+                         ' 1'||CHR(10)||'-      FROM DUAL'||CHR(10)||'-     WHERE '''||CHR(38)||'NEW:PAYMENT_INFO2'''||
+                         ' LIKE ''8%'''||CHR(10)||'-       AND length('''||CHR(38)||'NEW:PAYMENT_INFO2'') = 48;'||
+                         ''||CHR(10)||'-'||CHR(10)||'-  -- FIM DE VERIFICACAO DE VARI\00C1VEL COME\00C7ANDO COM CARACTER 8 P'||
+                         'AYMENT_'||CHR(38)||'NEW:PAYMENT_INFO2'||CHR(10)||'-'||CHR(10)||'-  -- VERIFICAR SE O CAMPO'||
+                         ' PAYMENT INFO 2 POSSUI 47 DIGITOS'||CHR(10)||'-'||CHR(10)||'-  CURSOR GET_P2_47 IS'||
+                         ''||CHR(10)||'-    SELECT 1'||CHR(10)||'-      FROM DUAL'||CHR(10)||'-     WHERE LENGTH('''||
+                         ''||CHR(38)||'NEW:PAYMENT_INFO2'') = 47;'||CHR(10)||'-'||CHR(10)||'-  -- FIM DE VERIFICACAO'||
+                         ' DE 47 DIGITOS NO PAYMENT INFO 2'||CHR(10)||'-'||CHR(10)||'-  -- VERIFICAR DIMENSAO DE 44 '||
+                         'DIGITOS NO PAYMENT INFO 1'||CHR(10)||'-'||CHR(10)||'-  CURSOR GET_P1_44 IS'||CHR(10)||'-  '||
+                         '  SELECT 1'||CHR(10)||'-      FROM DUAL'||CHR(10)||'-     WHERE LENGTH('''||CHR(38)||'NEW:'||
+                         'PAYMENT_INFO1'') =44;'||CHR(10)||'-'||CHR(10)||'-  -- FIM DE VERIFICACAO DE 44 DIGITOS NO '||
+                         'PAYMENT INFOR 1'||CHR(10)||'-'||CHR(10)||'-BEGIN'||CHR(10)||'-'||CHR(10)||'-  -- CURSOR TY'||
+                         'PE_FIELD1'||CHR(10)||'-'||CHR(10)||'-  OPEN GET_TYPE_FIELD1;'||CHR(10)||'-  FETCH GET_TYPE'||
+                         '_FIELD1'||CHR(10)||'-    INTO TYPE_FIELD1_;'||CHR(10)||'-  CLOSE GET_TYPE_FIELD1;'||
+                         ''||CHR(10)||'-'||CHR(10)||'-  -- FIM DO CURSOR TYPE_FIELD1'||CHR(10)||'-'||CHR(10)||'-  --'||
+                         ' CURSOR TYPE_FIELD2'||CHR(10)||'-'||CHR(10)||'-  OPEN GET_TYPE_FIELD2;'||CHR(10)||'-  FETC'||
+                         'H GET_TYPE_FIELD2'||CHR(10)||'-    INTO TYPE_FIELD2_;'||CHR(10)||'-  CLOSE GET_TYPE_FIELD2'||
+                         ';'||CHR(10)||'-'||CHR(10)||'-  -- FIM DO CURSOR TYPE_FIELD2'||CHR(10)||'-'||CHR(10)||'-  -'||
+                         '- CURSOR P1_48 PAYMENT_'||CHR(38)||'NEW:PAYMENT_INFO1 COME\00C7A COM 8 E TEM 48 CARACTERES'||
+                         ''||CHR(10)||'-'||CHR(10)||'-  OPEN GET_P1_48;'||CHR(10)||'-  FETCH GET_P1_48'||CHR(10)||'-'||
+                         '    INTO P1_48_;'||CHR(10)||'-  CLOSE GET_P1_48;'||CHR(10)||'-'||CHR(10)||'-  -- FIM DO CU'||
+                         'RSOR  P1_48 PAYMENT_'||CHR(38)||'NEW:PAYMENT_INFO1 '||CHR(10)||'-'||CHR(10)||'-  -- CURSOR'||
+                         ' P2_48 PAYMENT_'||CHR(38)||'NEW:PAYMENT_INFO2 COME\00C7A COM 8 E TEM 48 CARACTERES'||
+                         ''||CHR(10)||'-'||CHR(10)||'-  OPEN GET_P2_48;'||CHR(10)||'-  FETCH GET_P2_48'||CHR(10)||'-'||
+                         '    INTO P2_48_;'||CHR(10)||'-  CLOSE GET_P2_48;'||CHR(10)||'-'||CHR(10)||'-  -- FIM DO CU'||
+                         'RSOR  P2_48 PAYMENT_'||CHR(38)||'NEW:PAYMENT_INFO2'||CHR(10)||'-'||CHR(10)||'-  -- CURSOR '||
+                         'P2_47 PAYMENT_'||CHR(38)||'NEW:PAYMENT_INFO2 47 CARACTERES'||CHR(10)||'-'||CHR(10)||'-  OP'||
+                         'EN GET_P2_47;'||CHR(10)||'-  FETCH GET_P2_47'||CHR(10)||'-    INTO P2_47_;'||CHR(10)||'-  '||
+                         'CLOSE GET_P2_47;'||CHR(10)||'-'||CHR(10)||'-  -- FIM DO CURSOR  P2_47 PAYMENT_'||
+                         ''||CHR(38)||'NEW:PAYMENT_INFO2'||CHR(10)||'-'||CHR(10)||'-  -- CURSOR P1_44 PAYMENT_'||
+                         ''||CHR(38)||'NEW:PAYMENT_INFO1 44 CARACTERES'||CHR(10)||'-'||CHR(10)||'-  OPEN GET_P1_44;'||
+                         ''||CHR(10)||'-  FETCH GET_P1_44'||CHR(10)||'-    INTO P1_44_;'||CHR(10)||'-  CLOSE GET_P1_'||
+                         '44;'||CHR(10)||'-'||CHR(10)||'-  -- FIM DO CURSOR  P1_44 PAYMENT_'||CHR(38)||'NEW:PAYMENT_'||
+                         'INFO1'||CHR(10)||'-'||CHR(10)||'-  -- CONDICOES PARA TRATATIVA DAS VARIAVEIS'||CHR(10)||'-'||
+                         ''||CHR(10)||'-  IF '''||CHR(38)||'NEW:PARTY_TYPE'' = ''SUPPLIER'' THEN'||CHR(10)||'-    --'||
+                         ' VERIFICA SE A REQUISI\00C7\00C3O ESTA VINDO DO SISTEMA OU DO USU\00C1RIO'||CHR(10)||'-  '||CHR(10)||''||
+                         '-    IF TYPE_FIELD1_ = ''alpha'' OR TYPE_FIELD2_ = ''alpha'' THEN'||CHR(10)||'-      -- SE'||
+                         ' VALOR PASSADO NA VARIAVEL FOR ALPHA SERA EXIBIDO O ERRO '||CHR(10)||'-    '||CHR(10)||'- '||
+                         '     RAISE_APPLICATION_ERROR(-20100, ''O valor inserido n\00E3o \00E9 num\00E9rico'');'||CHR(10)||'-'||
+                         ''||CHR(10)||'-    ELSE'||CHR(10)||'-'||CHR(10)||'-      -- SE VALOR ENCONTRATO NUMERICO VE'||
+                         'RIFICAREMOS A QUANTIDADE DE CARACTERES'||CHR(10)||'-       IF P1_48_ IS NULL AND P2_48_ IS'||
+                         ' NULL AND P2_47_ IS NULL AND P1_44_ IS NULL THEN'||CHR(10)||'-        ---AND P2_47_ AND P1'||
+                         '_44 VERIFICA SE ALGUMA DAS VARIAVEIS E N\00C3O FOR NULA, SE ALGUMA NAO FOR NULA SIGNIFICA QUE '||
+                         'ATENDEU OS REQUISITOS DE CODIGO DE BARRA E ESTA CORRETA ESTAO FARA'||CHR(10)||'-     '||
+                         ''||CHR(10)||'-        RAISE_APPLICATION_ERROR(-20100,'||CHR(10)||'-                       '||
+                         '         ''A quantidade de caracteres no campo inserido n\00E3o conincide com o padr\00E3o, ( Paym'||
+                         'ent_2: 47 digitos, Payment1: aceita 44 d\00EDgitos, Se come\00E7a com d\00EDgito 8: 48 caracteres ambo'||
+                         's )'');'||CHR(10)||'-      '||CHR(10)||'-        -- ELSE IF -- SE TODAS AS VARIAVEIS FOREM'||
+                         ' NULAS, SIGNIFICA QUE OS CAMPOS DE PAYMENT_INFO FORAM PRENECHIDOS DE FORMA INCORRETA, SERA'||
+                         ' EXIBIDO O ERRO ABAIXO'||CHR(10)||'-      '||CHR(10)||'-      END IF;'||CHR(10)||'-    '||
+                         ''||CHR(10)||'-    END IF;'||CHR(10)||'-  END IF;'||CHR(10)||'-'||CHR(10)||'-END;'||
+                         ''||CHR(10)||'$ATTACH=!ATTACHMENTS'||CHR(10)||''),
+                         Database_SYS.Unistr('!EVENT_ACTION_COND_TYPE'||CHR(10)||'$NEW:PARTY_TYPE='||CHR(10)||'$NEW:PAYMENT_INFO1=!='||
+                         ''||CHR(10)||'$NEW:PAYMENT_INFO2=!='||CHR(10)||'$NEW:ROWKEY='||CHR(10)||''), 
+                         Database_SYS.Unistr('!EVENT_ACTION_COND_VALUE'||CHR(10)||'$NEW:PARTY_TYPE='||CHR(10)||'$NEW:PAYMENT_INFO1=NULL'||
+                         ''||CHR(10)||'$NEW:PAYMENT_INFO2=NULL'||CHR(10)||'$NEW:ROWKEY='||CHR(10)||''),
+                         To_Date(Database_SYS.Unistr('2020-11-20-10.02.19'), 'YYYY-MM-DD-HH24.MI.SS'),
+                         Database_SYS.Unistr('EXECUTEONLINESQL'), 
+                         Database_SYS.Unistr('Evento para validar digitos n\00FAmericos do boleto (payment_info1 '||CHR(38)||' payment_info_'||
+                         '2) onde Party_type \00E9 Supplier'), 
+                         Database_SYS.Unistr('FALSE'), 
+                         Database_SYS.Unistr('FALSE'), 
+                         Database_SYS.Unistr(''), 
+                         Database_SYS.Unistr('AF83AD43A633269BE053840110AC56FA'));
+END;
+/
+COMMIT
+/
+SET DEFINE ON
+

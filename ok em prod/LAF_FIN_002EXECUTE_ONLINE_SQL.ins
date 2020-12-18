@@ -1,0 +1,76 @@
+SET DEFINE OFF
+
+DECLARE
+   info_msg_   CLOB;
+   PROCEDURE Import_Event_Actions (
+      event_lu_name_          IN VARCHAR2,
+      event_id_               IN VARCHAR2,
+      action_number_          IN NUMBER,
+      action_enable_          IN VARCHAR2,
+      action_parameters_      IN CLOB,
+      condition_type_         IN VARCHAR2,
+      condition_value_        IN VARCHAR2,
+      definition_modified_date_  IN DATE,
+      fnd_event_action_type_  IN VARCHAR2,
+      description_            IN VARCHAR2,
+      subscribable_           IN VARCHAR2,
+      system_defined_         IN VARCHAR2,
+      role_                   IN VARCHAR2,
+      rowkey_                 IN VARCHAR2 )
+   IS
+   BEGIN
+      info_msg_ := NULL;
+      info_msg_ := Message_SYS.Construct('FND_EVENT_ACTION_TAB');
+      Message_SYS.Add_Attribute(info_msg_, 'EVENT_LU_NAME', event_lu_name_);
+      Message_SYS.Add_Attribute(info_msg_, 'EVENT_ID', event_id_);
+      Message_SYS.Add_Attribute(info_msg_, 'ACTION_NUMBER', action_number_);
+      Message_SYS.Add_Attribute(info_msg_, 'ACTION_ENABLE', action_enable_);
+      Message_SYS.Add_Clob_Attribute(info_msg_, 'ACTION_PARAMETERS', to_char(action_parameters_));
+      Message_SYS.Add_Attribute(info_msg_, 'CONDITION_TYPE', condition_type_);
+      Message_SYS.Add_Attribute(info_msg_, 'CONDITION_VALUE', condition_value_);
+      Message_SYS.Add_Attribute(info_msg_, 'DEFINITION_MODIFIED_DATE', definition_modified_date_);
+      Message_SYS.Add_Attribute(info_msg_, 'FND_EVENT_ACTION_TYPE', fnd_event_action_type_);
+      Message_SYS.Add_Attribute(info_msg_, 'DESCRIPTION', description_);
+      Message_SYS.Add_Attribute(info_msg_, 'SUBSCRIBABLE', subscribable_);
+      Message_SYS.Add_Attribute(info_msg_, 'SYSTEM_DEFINED', system_defined_);
+      Message_SYS.Add_Attribute(info_msg_, 'ROLE', role_);
+      Message_SYS.Add_Attribute(info_msg_, 'ROWKEY', rowkey_);
+      Fnd_Event_Action_API.Register(info_msg_);
+   END;
+BEGIN
+   Import_Event_Actions( Database_SYS.Unistr('ManSuppInvoice'),
+                         Database_SYS.Unistr('LAF_FIN_002'), 
+                         Database_SYS.Unistr('0'),
+                         Database_SYS.Unistr('TRUE'), 
+                         Database_SYS.Unistr('!FNDSER.EVENT_ACTION_PARAM'||CHR(10)||'$SQL=DECLARE'||CHR(10)||'-'||CHR(10)||'-  GROUP_FOR'||
+                         '_NACIONAIS_ VARCHAR2(10);'||CHR(10)||'-'||CHR(10)||'-  CURSOR GET_GROUP_FOR_NACIONAIS IS'||
+                         ''||CHR(10)||'-    SELECT 1'||CHR(10)||'-      FROM IDENTITY_INVOICE_INFO A'||CHR(10)||'-  '||
+                         '   WHERE A.IDENTITY = '''||CHR(38)||'NEW:IDENTITY'''||CHR(10)||'-       AND A.GROUP_ID = '||
+                         '''FORN. NACIONAIS'';'||CHR(10)||'-'||CHR(10)||'-BEGIN'||CHR(10)||'-'||CHR(10)||'-  OPEN GE'||
+                         'T_GROUP_FOR_NACIONAIS;'||CHR(10)||'-  FETCH GET_GROUP_FOR_NACIONAIS'||CHR(10)||'-    INTO '||
+                         'GROUP_FOR_NACIONAIS_;'||CHR(10)||'-  CLOSE GET_GROUP_FOR_NACIONAIS;'||CHR(10)||'-'||
+                         ''||CHR(10)||'-  IF '''||CHR(38)||'NEW:PO_REF_NUMBER'' IS NULL THEN'||CHR(10)||'-  '||
+                         ''||CHR(10)||'-    RAISE_APPLICATION_ERROR(-20100,'||CHR(10)||'-                           '||
+                         ' ''FLAG T\00CDTULO ANTECIPADO MARCADO DEVE CONTER REF PO INFORMADO'');'||CHR(10)||'-  '||
+                         ''||CHR(10)||'-  END IF;'||CHR(10)||'-'||CHR(10)||'-    IF GROUP_FOR_NACIONAIS_ IS NULL THE'||
+                         'N'||CHR(10)||'-      RAISE_APPLICATION_ERROR(-20100,'||CHR(10)||'-                        '||
+                         '      ''O FORNECEDOR N\00C3O PERTERCE AO GRUPO DE FORNECEDORES NACIONAIS!'');'||CHR(10)||'-   '||
+                         ' END IF;'||CHR(10)||'-'||CHR(10)||'-END;'||CHR(10)||'$ATTACH=!ATTACHMENTS'||CHR(10)||''),
+                         Database_SYS.Unistr('!EVENT_ACTION_COND_TYPE'||CHR(10)||'$NEW:ADV_INV=='||CHR(10)||'$NEW:IDENTITY='||CHR(10)||''||
+                         '$NEW:PO_REF_NUMBER='||CHR(10)||''), 
+                         Database_SYS.Unistr('!EVENT_ACTION_COND_VALUE'||CHR(10)||'$NEW:ADV_INV=TRUE'||CHR(10)||'$NEW:IDENTITY='||
+                         ''||CHR(10)||'$NEW:PO_REF_NUMBER='||CHR(10)||''),
+                         To_Date(Database_SYS.Unistr('2020-11-18-16.06.41'), 'YYYY-MM-DD-HH24.MI.SS'),
+                         Database_SYS.Unistr('EXECUTEONLINESQL'), 
+                         Database_SYS.Unistr('QUANDO FLAG PAGAMENTO ANTECIPADO MARCADO VERIFICAR SE REF PO N\00C3O \00C9 NULO E FORNECEDOR INFOR'||
+                         'MADO NO T\00CDTULO POSSUI CADASTRO COMO FORN. NACIONAIS'), 
+                         Database_SYS.Unistr('FALSE'), 
+                         Database_SYS.Unistr('FALSE'), 
+                         Database_SYS.Unistr(''), 
+                         Database_SYS.Unistr('B18646CCE1345013E053840110ACF782'));
+END;
+/
+COMMIT
+/
+SET DEFINE ON
+

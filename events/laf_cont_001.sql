@@ -5,7 +5,7 @@ begin
   
   end if;
   
-  select LENGTH(TRIM(TRANSLATE(&NEW:FNE_STATE_ID, '0123456789', ' '))) var
+  select LENGTH(TRIM(TRANSLATE('&NEW:FNE_STATE_ID', '0123456789', ' '))) var
     into p1_
     from DUAL;
   if p1_ is not null then
@@ -24,3 +24,8 @@ begin
     
   end if;
 end;
+
+SELECT (buy_qty_due * sale_unit_price) -
+       (4 * (buy_qty_due * sale_unit_price)/100)
+  FROM ORDER_QUOTATION_LINE
+ WHERE QUOTATION_NO = '16'

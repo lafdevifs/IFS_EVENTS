@@ -1,0 +1,72 @@
+SET DEFINE OFF
+
+DECLARE
+   info_msg_   CLOB;
+   PROCEDURE Import_Event_Actions (
+      event_lu_name_          IN VARCHAR2,
+      event_id_               IN VARCHAR2,
+      action_number_          IN NUMBER,
+      action_enable_          IN VARCHAR2,
+      action_parameters_      IN CLOB,
+      condition_type_         IN VARCHAR2,
+      condition_value_        IN VARCHAR2,
+      definition_modified_date_  IN DATE,
+      fnd_event_action_type_  IN VARCHAR2,
+      description_            IN VARCHAR2,
+      subscribable_           IN VARCHAR2,
+      system_defined_         IN VARCHAR2,
+      role_                   IN VARCHAR2,
+      rowkey_                 IN VARCHAR2 )
+   IS
+   BEGIN
+      info_msg_ := NULL;
+      info_msg_ := Message_SYS.Construct('FND_EVENT_ACTION_TAB');
+      Message_SYS.Add_Attribute(info_msg_, 'EVENT_LU_NAME', event_lu_name_);
+      Message_SYS.Add_Attribute(info_msg_, 'EVENT_ID', event_id_);
+      Message_SYS.Add_Attribute(info_msg_, 'ACTION_NUMBER', action_number_);
+      Message_SYS.Add_Attribute(info_msg_, 'ACTION_ENABLE', action_enable_);
+      Message_SYS.Add_Clob_Attribute(info_msg_, 'ACTION_PARAMETERS', to_char(action_parameters_));
+      Message_SYS.Add_Attribute(info_msg_, 'CONDITION_TYPE', condition_type_);
+      Message_SYS.Add_Attribute(info_msg_, 'CONDITION_VALUE', condition_value_);
+      Message_SYS.Add_Attribute(info_msg_, 'DEFINITION_MODIFIED_DATE', definition_modified_date_);
+      Message_SYS.Add_Attribute(info_msg_, 'FND_EVENT_ACTION_TYPE', fnd_event_action_type_);
+      Message_SYS.Add_Attribute(info_msg_, 'DESCRIPTION', description_);
+      Message_SYS.Add_Attribute(info_msg_, 'SUBSCRIBABLE', subscribable_);
+      Message_SYS.Add_Attribute(info_msg_, 'SYSTEM_DEFINED', system_defined_);
+      Message_SYS.Add_Attribute(info_msg_, 'ROLE', role_);
+      Message_SYS.Add_Attribute(info_msg_, 'ROWKEY', rowkey_);
+      Fnd_Event_Action_API.Register(info_msg_);
+   END;
+BEGIN
+   Import_Event_Actions( Database_SYS.Unistr('DocIssue'),
+                         Database_SYS.Unistr('LAF_GED_002'), 
+                         Database_SYS.Unistr('0'),
+                         Database_SYS.Unistr('TRUE'), 
+                         Database_SYS.Unistr('!FNDSER.EVENT_ACTION_PARAM'||CHR(10)||'$SQL=DECLARE'||CHR(10)||'-'||CHR(10)||'-USER_ALLOWE'||
+                         'D_CLASS_ VARCHAR(100);'||CHR(10)||'-'||CHR(10)||'-CURSOR GET_ALLOWED_CLASS IS'||CHR(10)||''||
+                         '-SELECT doc_class'||CHR(10)||'-FROM DOCUMENT_ACCESS_TEMPLATE ac'||CHR(10)||'-INNER JOIN do'||
+                         'cument_group_members gp'||CHR(10)||'-ON ac.group_id = gp.group_id  '||CHR(10)||'-WHERE ac.'||
+                         'doc_class ='''||CHR(38)||'NEW:DOC_CLASS'' and gp.person_ID = '''||CHR(38)||'NEW:DOC_RESP_S'||
+                         'IGN'';'||CHR(10)||'-'||CHR(10)||'-'||CHR(10)||'-BEGIN'||CHR(10)||'-'||CHR(10)||'-OPEN GET_'||
+                         'ALLOWED_CLASS;'||CHR(10)||'-FETCH GET_ALLOWED_CLASS INTO USER_ALLOWED_CLASS_;'||CHR(10)||''||
+                         '-CLOSE GET_ALLOWED_CLASS;'||CHR(10)||'-'||CHR(10)||'-IF USER_ALLOWED_CLASS_ IS NULL THEN'||
+                         ''||CHR(10)||'-'||CHR(10)||'-RAISE_APPLICATION_ERROR(-20100,''VOC\00CA N\00C3O POSSUI ACESSO PARA S'||
+                         'ALVAR NESTA CLASSE'');'||CHR(10)||'-'||CHR(10)||'-END IF;'||CHR(10)||'-'||CHR(10)||'-'||
+                         ''||CHR(10)||'-END;'||CHR(10)||'$ATTACH=!ATTACHMENTS'||CHR(10)||''),
+                         Database_SYS.Unistr('!EVENT_ACTION_COND_TYPE'||CHR(10)||'$NEW:DOC_CLASS='||CHR(10)||'$NEW:DOC_RESP_SIGN='||
+                         ''||CHR(10)||''), 
+                         Database_SYS.Unistr('!EVENT_ACTION_COND_VALUE'||CHR(10)||'$NEW:DOC_CLASS='||CHR(10)||'$NEW:DOC_RESP_SIGN='||
+                         ''||CHR(10)||''),
+                         To_Date(Database_SYS.Unistr('2020-10-09-14.32.10'), 'YYYY-MM-DD-HH24.MI.SS'),
+                         Database_SYS.Unistr('EXECUTEONLINESQL'), 
+                         Database_SYS.Unistr('SALVAR DOCUMENTO NA CLASSE SOMENTE SE O USU\00C1RIO POSSUIR ACESSO NA CLASSE'), 
+                         Database_SYS.Unistr('FALSE'), 
+                         Database_SYS.Unistr('FALSE'), 
+                         Database_SYS.Unistr(''), 
+                         Database_SYS.Unistr('AD76879C5C627E98E053840110ACCFD0'));
+END;
+/
+COMMIT
+/
+SET DEFINE ON
+

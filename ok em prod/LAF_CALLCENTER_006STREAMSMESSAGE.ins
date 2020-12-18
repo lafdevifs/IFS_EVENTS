@@ -1,0 +1,73 @@
+SET DEFINE OFF
+
+DECLARE
+   info_msg_   CLOB;
+   PROCEDURE Import_Event_Actions (
+      event_lu_name_          IN VARCHAR2,
+      event_id_               IN VARCHAR2,
+      action_number_          IN NUMBER,
+      action_enable_          IN VARCHAR2,
+      action_parameters_      IN CLOB,
+      condition_type_         IN VARCHAR2,
+      condition_value_        IN VARCHAR2,
+      definition_modified_date_  IN DATE,
+      fnd_event_action_type_  IN VARCHAR2,
+      description_            IN VARCHAR2,
+      subscribable_           IN VARCHAR2,
+      system_defined_         IN VARCHAR2,
+      role_                   IN VARCHAR2,
+      rowkey_                 IN VARCHAR2 )
+   IS
+   BEGIN
+      info_msg_ := NULL;
+      info_msg_ := Message_SYS.Construct('FND_EVENT_ACTION_TAB');
+      Message_SYS.Add_Attribute(info_msg_, 'EVENT_LU_NAME', event_lu_name_);
+      Message_SYS.Add_Attribute(info_msg_, 'EVENT_ID', event_id_);
+      Message_SYS.Add_Attribute(info_msg_, 'ACTION_NUMBER', action_number_);
+      Message_SYS.Add_Attribute(info_msg_, 'ACTION_ENABLE', action_enable_);
+      Message_SYS.Add_Clob_Attribute(info_msg_, 'ACTION_PARAMETERS', to_char(action_parameters_));
+      Message_SYS.Add_Attribute(info_msg_, 'CONDITION_TYPE', condition_type_);
+      Message_SYS.Add_Attribute(info_msg_, 'CONDITION_VALUE', condition_value_);
+      Message_SYS.Add_Attribute(info_msg_, 'DEFINITION_MODIFIED_DATE', definition_modified_date_);
+      Message_SYS.Add_Attribute(info_msg_, 'FND_EVENT_ACTION_TYPE', fnd_event_action_type_);
+      Message_SYS.Add_Attribute(info_msg_, 'DESCRIPTION', description_);
+      Message_SYS.Add_Attribute(info_msg_, 'SUBSCRIBABLE', subscribable_);
+      Message_SYS.Add_Attribute(info_msg_, 'SYSTEM_DEFINED', system_defined_);
+      Message_SYS.Add_Attribute(info_msg_, 'ROLE', role_);
+      Message_SYS.Add_Attribute(info_msg_, 'ROWKEY', rowkey_);
+      Fnd_Event_Action_API.Register(info_msg_);
+   END;
+BEGIN
+   Import_Event_Actions( Database_SYS.Unistr('CcCaseTask'),
+                         Database_SYS.Unistr('LAF_CALLCENTER_006'), 
+                         Database_SYS.Unistr('0'),
+                         Database_SYS.Unistr('TRUE'), 
+                         Database_SYS.Unistr('!FNDSER.EVENT_ACTION_PARAM'||CHR(10)||'$FROM=#USER_ID#'||CHR(10)||'$TO=MARCOS.MELO,RAFAELA'||
+                         '.SILVA'||CHR(10)||'$BODY=Voc\00EA acaba de receber uma nova tarefa, clique para visualizar'||
+                         ''||CHR(10)||'$HEADER=SOLICITA\00C7\00C3O DE DEMANDA'||CHR(10)||'$URL=ifsapf:frmCaseTaskHeader?exte'||
+                         'rnal_search=CASE_ID=<VALUE_URL_ENCODE>'||CHR(38)||'NEW:CASE_ID</VALUE_URL_ENCODE>'||
+                         ''||CHR(10)||'$FROM=#USER_ID#'||CHR(10)||'$TO=MARCOS.MELO,RAFAELA.SILVA'||CHR(10)||'$BODY=V'||
+                         'oc\00EA acaba de receber uma nova tarefa, clique para visualizar'||CHR(10)||'$HEADER=SOLICITA\00C7'||
+                         '\00C3O DE DEMANDA'||CHR(10)||'$URL=ifsapf:frmCaseTaskHeader?external_search=CASE_ID=<VALUE_URL'||
+                         '_ENCODE>'||CHR(38)||'NEW:CASE_ID</VALUE_URL_ENCODE>'||CHR(10)||'$RECEIVER=MARCOS.MELO;'||
+                         ''||CHR(10)||'$URL=ifsapf:frmCaseTaskHeader?external_search=CASE_ID=<VALUE_URL_ENCODE>'||
+                         ''||CHR(38)||'NEW:CASE_ID</VALUE_URL_ENCODE>'||CHR(10)||'$SUBJECT=SOLICITA\00C7\00C3O DE DEMANDA'||
+                         ''||CHR(10)||'$PRIORITY=High'||CHR(10)||'$MESSAGE=Voc\00EA acaba de receber uma nova tarefa, cl'||
+                         'ique para visualizar'||CHR(10)||'$COMPLETE_EVENT='||CHR(10)||'$ATTACH=!ATTACHMENTS'||
+                         ''||CHR(10)||''),
+                         Database_SYS.Unistr('!EVENT_ACTION_COND_TYPE'||CHR(10)||'$NEW:CASE_ID='||CHR(10)||'$NEW:QUEUE=='||CHR(10)||''), 
+                         Database_SYS.Unistr('!EVENT_ACTION_COND_VALUE'||CHR(10)||'$NEW:CASE_ID='||CHR(10)||'$NEW:QUEUE=FISCAL'||
+                         ''||CHR(10)||''),
+                         To_Date(Database_SYS.Unistr('2020-11-10-11.06.51'), 'YYYY-MM-DD-HH24.MI.SS'),
+                         Database_SYS.Unistr('STREAMSMESSAGE'), 
+                         Database_SYS.Unistr('Tarefa de envio de mensagem ao grupo'), 
+                         Database_SYS.Unistr('FALSE'), 
+                         Database_SYS.Unistr('FALSE'), 
+                         Database_SYS.Unistr(''), 
+                         Database_SYS.Unistr('B34DB4E6783C6263E053840110AC94F2'));
+END;
+/
+COMMIT
+/
+SET DEFINE ON
+
