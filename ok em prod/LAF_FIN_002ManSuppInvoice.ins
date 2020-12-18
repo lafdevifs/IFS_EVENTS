@@ -1,0 +1,60 @@
+-------------------------------------------------------------------------------------------- 
+-- Export file for Custom Events LAF_FIN_002.
+-- 
+--  Date    Sign    History
+--  ------  ------  -----------------------------------------------------------
+--  201121  IFSLAF  Export file for task LAF_FIN_002.
+-------------------------------------------------------------------------------------------- 
+
+SET DEFINE ~
+PROMPT Register Custom Event "LAF_FIN_002"
+DECLARE
+   event_lu_name_      VARCHAR2(30)    := 'ManSuppInvoice';
+   event_id_           VARCHAR2(30)    := Database_SYS.Unistr('LAF_FIN_002');
+   id_                 VARCHAR2(100);
+   info_msg_           VARCHAR2(32000) := NULL;
+BEGIN
+-- Construct Main Message
+   info_msg_    := Message_SYS.Construct('');
+   Message_SYS.Add_Attribute(info_msg_, 'EVENT_DESCRIPTION', Database_SYS.Unistr('QUANDO FLAG PAGAMENTO ANTECIPADO MARCADO VERIFICAR SE REF PO N\00C3O \00C9 NULO E FORNECEDOR INFORMADO NO T\00CDTULO POSSUI CADASTRO COMO FORN. NACIONAIS'));
+   Message_SYS.Add_Attribute(info_msg_, 'EVENT_ENABLE', 'FALSE');
+   Message_SYS.Add_Attribute(info_msg_, 'EVENT_TYPE_DB', 'CUSTOM');
+   Message_SYS.Add_Attribute(info_msg_, 'EVENT_TABLE_NAME', 'INVOICE_TAB');
+   Message_SYS.Add_Attribute(info_msg_, 'EVENT_TRIGGER_TYPE_DB', 'AFTER');
+   Message_SYS.Add_Attribute(info_msg_, 'MODIFIED_ATTRIBUTES', '');
+   Message_SYS.Add_Attribute(info_msg_, 'NEW_ROW_DB', 'TRUE');
+   Message_SYS.Add_Attribute(info_msg_, 'MODIFY_ROW_DB', 'FALSE');
+   Message_SYS.Add_Attribute(info_msg_, 'REMOVE_ROW_DB', 'FALSE');
+-- Register Custom Event
+   Fnd_Event_API.Register_Custom_Event(event_lu_name_, event_id_, info_msg_);
+   -- Register Event Parameter
+      info_msg_ := Message_SYS.Construct('');
+      id_  := Database_SYS.Unistr('ADV_INV');
+      Message_SYS.Add_Attribute(info_msg_, 'ID_TYPE', 'STRING');
+      Message_SYS.Add_Attribute(info_msg_, 'PLSQL_METHOD', Database_SYS.Unistr(''));
+      Message_SYS.Add_Attribute(info_msg_, 'CURRENT_VALUE_DB', 'FALSE');
+      Message_SYS.Add_Attribute(info_msg_, 'NEW_VALUE_DB', 'TRUE');
+      Fnd_Event_Parameter_API.Register(event_lu_name_, event_id_, id_, info_msg_);
+   -- Register Event Parameter
+      info_msg_ := Message_SYS.Construct('');
+      id_  := Database_SYS.Unistr('IDENTITY');
+      Message_SYS.Add_Attribute(info_msg_, 'ID_TYPE', 'STRING');
+      Message_SYS.Add_Attribute(info_msg_, 'PLSQL_METHOD', Database_SYS.Unistr(''));
+      Message_SYS.Add_Attribute(info_msg_, 'CURRENT_VALUE_DB', 'FALSE');
+      Message_SYS.Add_Attribute(info_msg_, 'NEW_VALUE_DB', 'TRUE');
+      Fnd_Event_Parameter_API.Register(event_lu_name_, event_id_, id_, info_msg_);
+   -- Register Event Parameter
+      info_msg_ := Message_SYS.Construct('');
+      id_  := Database_SYS.Unistr('PO_REF_NUMBER');
+      Message_SYS.Add_Attribute(info_msg_, 'ID_TYPE', 'STRING');
+      Message_SYS.Add_Attribute(info_msg_, 'PLSQL_METHOD', Database_SYS.Unistr(''));
+      Message_SYS.Add_Attribute(info_msg_, 'CURRENT_VALUE_DB', 'FALSE');
+      Message_SYS.Add_Attribute(info_msg_, 'NEW_VALUE_DB', 'TRUE');
+      Fnd_Event_Parameter_API.Register(event_lu_name_, event_id_, id_, info_msg_);
+   -- Update all actions with parameters
+      Fnd_Event_Action_API.Update_Action(event_lu_name_, event_id_, NULL);
+END;
+/
+COMMIT
+/
+SET DEFINE &

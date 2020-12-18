@@ -1,0 +1,70 @@
+-------------------------------------------------------------------------------------------- 
+-- Export file for Custom Events LAF_MNT_004.
+-- 
+--  Date    Sign    History
+--  ------  ------  -----------------------------------------------------------
+--  201121  IFSLAF  Export file for task LAF_MNT_004.
+-------------------------------------------------------------------------------------------- 
+
+SET DEFINE ~
+PROMPT Register Custom Event "LAF_MNT_004"
+DECLARE
+   event_lu_name_      VARCHAR2(30)    := 'WorkOrder';
+   event_id_           VARCHAR2(30)    := Database_SYS.Unistr('LAF_MNT_004');
+   id_                 VARCHAR2(100);
+   info_msg_           VARCHAR2(32000) := NULL;
+BEGIN
+-- Construct Main Message
+   info_msg_    := Message_SYS.Construct('');
+   Message_SYS.Add_Attribute(info_msg_, 'EVENT_DESCRIPTION', Database_SYS.Unistr('Alterar status de objeto serial para DISPONIVEL sempre que uma ordem de servi\00E7o for conclu\00EDda.
+Condi\00E7\00F5es = ordem do tipo correr
+Status atual = No estoque'));
+   Message_SYS.Add_Attribute(info_msg_, 'EVENT_ENABLE', 'FALSE');
+   Message_SYS.Add_Attribute(info_msg_, 'EVENT_TYPE_DB', 'CUSTOM');
+   Message_SYS.Add_Attribute(info_msg_, 'EVENT_TABLE_NAME', 'HISTORICAL_WORK_ORDER_TAB');
+   Message_SYS.Add_Attribute(info_msg_, 'EVENT_TRIGGER_TYPE_DB', 'AFTER');
+   Message_SYS.Add_Attribute(info_msg_, 'MODIFIED_ATTRIBUTES', '');
+   Message_SYS.Add_Attribute(info_msg_, 'NEW_ROW_DB', 'TRUE');
+   Message_SYS.Add_Attribute(info_msg_, 'MODIFY_ROW_DB', 'FALSE');
+   Message_SYS.Add_Attribute(info_msg_, 'REMOVE_ROW_DB', 'FALSE');
+-- Register Custom Event
+   Fnd_Event_API.Register_Custom_Event(event_lu_name_, event_id_, info_msg_);
+   -- Register Event Parameter
+      info_msg_ := Message_SYS.Construct('');
+      id_  := Database_SYS.Unistr('MCH_CODE');
+      Message_SYS.Add_Attribute(info_msg_, 'ID_TYPE', 'STRING');
+      Message_SYS.Add_Attribute(info_msg_, 'PLSQL_METHOD', Database_SYS.Unistr(''));
+      Message_SYS.Add_Attribute(info_msg_, 'CURRENT_VALUE_DB', 'FALSE');
+      Message_SYS.Add_Attribute(info_msg_, 'NEW_VALUE_DB', 'TRUE');
+      Fnd_Event_Parameter_API.Register(event_lu_name_, event_id_, id_, info_msg_);
+   -- Register Event Parameter
+      info_msg_ := Message_SYS.Construct('');
+      id_  := Database_SYS.Unistr('MCH_CODE_CONTRACT');
+      Message_SYS.Add_Attribute(info_msg_, 'ID_TYPE', 'STRING');
+      Message_SYS.Add_Attribute(info_msg_, 'PLSQL_METHOD', Database_SYS.Unistr(''));
+      Message_SYS.Add_Attribute(info_msg_, 'CURRENT_VALUE_DB', 'FALSE');
+      Message_SYS.Add_Attribute(info_msg_, 'NEW_VALUE_DB', 'TRUE');
+      Fnd_Event_Parameter_API.Register(event_lu_name_, event_id_, id_, info_msg_);
+   -- Register Event Parameter
+      info_msg_ := Message_SYS.Construct('');
+      id_  := Database_SYS.Unistr('STATUS');
+      Message_SYS.Add_Attribute(info_msg_, 'ID_TYPE', 'STRING');
+      Message_SYS.Add_Attribute(info_msg_, 'PLSQL_METHOD', Database_SYS.Unistr('PART_SERIAL_CATALOG_API.Get_State(EQUIPMENT_SERIAL_API.Get_Part_No(&NEW:MCH_CODE_CONTRACT, &NEW:MCH_CODE), EQUIPMENT_SERIAL_API.Get_Serial_No(&NEW:MCH_CODE_CONTRACT, &NEW:MCH_CODE))'));
+      Message_SYS.Add_Attribute(info_msg_, 'CURRENT_VALUE_DB', 'FALSE');
+      Message_SYS.Add_Attribute(info_msg_, 'NEW_VALUE_DB', 'FALSE');
+      Fnd_Event_Parameter_API.Register(event_lu_name_, event_id_, id_, info_msg_);
+   -- Register Event Parameter
+      info_msg_ := Message_SYS.Construct('');
+      id_  := Database_SYS.Unistr('WORK_TYPE_ID');
+      Message_SYS.Add_Attribute(info_msg_, 'ID_TYPE', 'STRING');
+      Message_SYS.Add_Attribute(info_msg_, 'PLSQL_METHOD', Database_SYS.Unistr(''));
+      Message_SYS.Add_Attribute(info_msg_, 'CURRENT_VALUE_DB', 'FALSE');
+      Message_SYS.Add_Attribute(info_msg_, 'NEW_VALUE_DB', 'TRUE');
+      Fnd_Event_Parameter_API.Register(event_lu_name_, event_id_, id_, info_msg_);
+   -- Update all actions with parameters
+      Fnd_Event_Action_API.Update_Action(event_lu_name_, event_id_, NULL);
+END;
+/
+COMMIT
+/
+SET DEFINE &

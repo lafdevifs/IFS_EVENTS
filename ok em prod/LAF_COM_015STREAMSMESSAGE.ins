@@ -1,0 +1,90 @@
+SET DEFINE OFF
+
+DECLARE
+   info_msg_   CLOB;
+   PROCEDURE Import_Event_Actions (
+      event_lu_name_          IN VARCHAR2,
+      event_id_               IN VARCHAR2,
+      action_number_          IN NUMBER,
+      action_enable_          IN VARCHAR2,
+      action_parameters_      IN CLOB,
+      condition_type_         IN VARCHAR2,
+      condition_value_        IN VARCHAR2,
+      definition_modified_date_  IN DATE,
+      fnd_event_action_type_  IN VARCHAR2,
+      description_            IN VARCHAR2,
+      subscribable_           IN VARCHAR2,
+      system_defined_         IN VARCHAR2,
+      role_                   IN VARCHAR2,
+      rowkey_                 IN VARCHAR2 )
+   IS
+   BEGIN
+      info_msg_ := NULL;
+      info_msg_ := Message_SYS.Construct('FND_EVENT_ACTION_TAB');
+      Message_SYS.Add_Attribute(info_msg_, 'EVENT_LU_NAME', event_lu_name_);
+      Message_SYS.Add_Attribute(info_msg_, 'EVENT_ID', event_id_);
+      Message_SYS.Add_Attribute(info_msg_, 'ACTION_NUMBER', action_number_);
+      Message_SYS.Add_Attribute(info_msg_, 'ACTION_ENABLE', action_enable_);
+      Message_SYS.Add_Clob_Attribute(info_msg_, 'ACTION_PARAMETERS', to_char(action_parameters_));
+      Message_SYS.Add_Attribute(info_msg_, 'CONDITION_TYPE', condition_type_);
+      Message_SYS.Add_Attribute(info_msg_, 'CONDITION_VALUE', condition_value_);
+      Message_SYS.Add_Attribute(info_msg_, 'DEFINITION_MODIFIED_DATE', definition_modified_date_);
+      Message_SYS.Add_Attribute(info_msg_, 'FND_EVENT_ACTION_TYPE', fnd_event_action_type_);
+      Message_SYS.Add_Attribute(info_msg_, 'DESCRIPTION', description_);
+      Message_SYS.Add_Attribute(info_msg_, 'SUBSCRIBABLE', subscribable_);
+      Message_SYS.Add_Attribute(info_msg_, 'SYSTEM_DEFINED', system_defined_);
+      Message_SYS.Add_Attribute(info_msg_, 'ROLE', role_);
+      Message_SYS.Add_Attribute(info_msg_, 'ROWKEY', rowkey_);
+      Fnd_Event_Action_API.Register(info_msg_);
+   END;
+BEGIN
+   Import_Event_Actions( Database_SYS.Unistr('CcCaseTask'),
+                         Database_SYS.Unistr('LAF_COM_015'), 
+                         Database_SYS.Unistr('0'),
+                         Database_SYS.Unistr('TRUE'), 
+                         Database_SYS.Unistr('!FNDSER.EVENT_ACTION_PARAM'||CHR(10)||'$FROM=#USER_ID#'||CHR(10)||'$TO='||CHR(38)||'NEW:CR'||
+                         'EATED_BY'||CHR(10)||'$BODY=Voc\00EA recebeu uma resposta para sua tarefa, clique para visualiz'||
+                         'ar'||CHR(10)||'$HEADER=Tarefa conclu\00EDda'||CHR(10)||'$URL=ifsapf:tbwCaseTaskOverview?extern'||
+                         'al_search=CASE_ID=<VALUE_URL_ENCODE>'||CHR(38)||'NEW:CASE_ID</VALUE_URL_ENCODE>'||
+                         ''||CHR(10)||'$FROM=#USER_ID#'||CHR(10)||'$TO='||CHR(38)||'NEW:CREATED_BY'||CHR(10)||'$BODY'||
+                         '=Uma tarefa que voc\00EA criou foi conclu\00EDda!'||CHR(10)||'$HEADER=Tarefa conclu\00EDda'||
+                         ''||CHR(10)||'$URL=ifsapf:tbwCaseTaskOverview?external_search=CASE_ID=<VALUE_URL_ENCODE>'||
+                         ''||CHR(38)||'NEW:CASE_ID</VALUE_URL_ENCODE>'||CHR(10)||'$FROM=#USER_ID#'||CHR(10)||'$TO=IF'||
+                         'SLAF'||CHR(10)||'$BODY=Uma tarefa que voc\00EA criou foi conclu\00EDda!'||CHR(10)||'$HEADER=Tarefa'||
+                         ' conclu\00EDda'||CHR(10)||'$URL=ifsapf:tbwCaseTaskOverview?external_search=CASE_ID=<VALUE_URL_'||
+                         'ENCODE>'||CHR(38)||'NEW:CASE_ID</VALUE_URL_ENCODE>'||CHR(10)||'$FROM=#USER_ID#'||
+                         ''||CHR(10)||'$TO='''||CHR(38)||'NEW:CREATED_BY'''||CHR(10)||'$BODY=Uma tarefa que voc\00EA cri'||
+                         'ou foi conclu\00EDda!'||CHR(10)||'$HEADER=Tarefa conclu\00EDda'||CHR(10)||'$URL=ifsapf:tbwCaseTask'||
+                         'Overview?external_search=CASE_ID=<VALUE_URL_ENCODE>'||CHR(38)||'NEW:CASE_ID</VALUE_URL_ENC'||
+                         'ODE>'||CHR(10)||'$FROM=#USER_ID#'||CHR(10)||'$TO='||CHR(38)||'NEW:CREATED_BY'||CHR(10)||'$'||
+                         'BODY=Uma tarefa que voc\00EA criou foi conclu\00EDda!'||CHR(10)||'$HEADER=Tarefa conclu\00EDda'||
+                         ''||CHR(10)||'$URL=ifsapf:tbwCaseTaskOverview?external_search=CASE_ID=<VALUE_URL_ENCODE>'||
+                         ''||CHR(38)||'NEW:CASE_ID</VALUE_URL_ENCODE>'||CHR(10)||'$FROM=#USER_ID#'||CHR(10)||'$TO='||
+                         ''||CHR(38)||'NEW:CREATED_BY'||CHR(10)||'$BODY=Uma tarefa que voc\00EA criou foi conclu\00EDda!'||
+                         ''||CHR(10)||'$HEADER=Tarefa conclu\00EDda'||CHR(10)||'$URL=ifsapf:tbwCaseTaskOverview?external'||
+                         '_search=CASE_ID=<VALUE_URL_ENCODE>'||CHR(38)||'NEW:CASE_ID</VALUE_URL_ENCODE>'||CHR(10)||''||
+                         '$FROM=#USER_ID#'||CHR(10)||'$TO='||CHR(38)||'NEW:CREATED_BY'||CHR(10)||'$BODY=Uma tarefa q'||
+                         'ue voc\00EA criou foi conclu\00EDda!'||CHR(10)||'$HEADER=Tarefa conclu\00EDda'||CHR(10)||'$URL=ifsapf:'||
+                         'tbwCaseTaskOverview?external_search==<VALUE_URL_ENCODE></VALUE_URL_ENCODE>'||CHR(10)||'$FR'||
+                         'OM=#USER_ID#'||CHR(10)||'$TO='||CHR(38)||'NEW:CREATED_BY'||CHR(10)||'$BODY=Uma tarefa que '||
+                         'voc\00EA criou foi conclu\00EDda!'||CHR(10)||'$HEADER=Tarefa conclu\00EDda'||CHR(10)||'$URL='||
+                         ''||CHR(10)||'$FROM=#USER_ID#'||CHR(10)||'$TO='||CHR(38)||'NEW:CREATED_BY'||CHR(10)||'$BODY'||
+                         '=Uma tarefa que voc\00EA criou foi conclu\00EDda!'||CHR(10)||'$HEADER=Tarefa conclu\00EDda'||
+                         ''||CHR(10)||'$URL='||CHR(10)||'$ATTACH=!ATTACHMENTS'||CHR(10)||''),
+                         Database_SYS.Unistr('!EVENT_ACTION_COND_TYPE'||CHR(10)||'$NEW:CASE_ID='||CHR(10)||'$NEW:CREATED_BY='||
+                         ''||CHR(10)||'$NEW:ROWSTATE=='||CHR(10)||''), 
+                         Database_SYS.Unistr('!EVENT_ACTION_COND_VALUE'||CHR(10)||'$NEW:CASE_ID='||CHR(10)||'$NEW:CREATED_BY='||
+                         ''||CHR(10)||'$NEW:ROWSTATE=Completed'||CHR(10)||''),
+                         To_Date(Database_SYS.Unistr('2020-11-13-17.45.37'), 'YYYY-MM-DD-HH24.MI.SS'),
+                         Database_SYS.Unistr('STREAMSMESSAGE'), 
+                         Database_SYS.Unistr('Envio de mensagem para o dono da tarefa '), 
+                         Database_SYS.Unistr('FALSE'), 
+                         Database_SYS.Unistr('FALSE'), 
+                         Database_SYS.Unistr(''), 
+                         Database_SYS.Unistr('B3F345BF5E8B63C2E053840110ACC730'));
+END;
+/
+COMMIT
+/
+SET DEFINE ON
+
