@@ -1,0 +1,60 @@
+-------------------------------------------------------------------------------------------- 
+-- Export file for Custom Events LAF_MNT_021.
+-- 
+--  Date    Sign    History
+--  ------  ------  -----------------------------------------------------------
+--  201229  IFSLAF  Export file for task LAF_MNT_021.
+-------------------------------------------------------------------------------------------- 
+
+SET DEFINE ~
+PROMPT Register Custom Event "LAF_MNT_021"
+DECLARE
+   event_lu_name_      VARCHAR2(30)    := 'HistoricalSeparate';
+   event_id_           VARCHAR2(30)    := Database_SYS.Unistr('LAF_MNT_021');
+   id_                 VARCHAR2(100);
+   info_msg_           VARCHAR2(32000) := NULL;
+BEGIN
+-- Construct Main Message
+   info_msg_    := Message_SYS.Construct('');
+   Message_SYS.Add_Attribute(info_msg_, 'EVENT_DESCRIPTION', Database_SYS.Unistr('Alterar status do Objeto serial para Aguardando Manuten\00E7\00E3o'));
+   Message_SYS.Add_Attribute(info_msg_, 'EVENT_ENABLE', 'FALSE');
+   Message_SYS.Add_Attribute(info_msg_, 'EVENT_TYPE_DB', 'CUSTOM');
+   Message_SYS.Add_Attribute(info_msg_, 'EVENT_TABLE_NAME', 'HISTORICAL_WORK_ORDER_TAB');
+   Message_SYS.Add_Attribute(info_msg_, 'EVENT_TRIGGER_TYPE_DB', 'AFTER');
+   Message_SYS.Add_Attribute(info_msg_, 'MODIFIED_ATTRIBUTES', 'WO_STATUS_ID');
+   Message_SYS.Add_Attribute(info_msg_, 'NEW_ROW_DB', 'TRUE');
+   Message_SYS.Add_Attribute(info_msg_, 'MODIFY_ROW_DB', 'FALSE');
+   Message_SYS.Add_Attribute(info_msg_, 'REMOVE_ROW_DB', 'FALSE');
+-- Register Custom Event
+   Fnd_Event_API.Register_Custom_Event(event_lu_name_, event_id_, info_msg_);
+   -- Register Event Parameter
+      info_msg_ := Message_SYS.Construct('');
+      id_  := Database_SYS.Unistr('MCH_CODE');
+      Message_SYS.Add_Attribute(info_msg_, 'ID_TYPE', 'STRING');
+      Message_SYS.Add_Attribute(info_msg_, 'PLSQL_METHOD', Database_SYS.Unistr(''));
+      Message_SYS.Add_Attribute(info_msg_, 'CURRENT_VALUE_DB', 'FALSE');
+      Message_SYS.Add_Attribute(info_msg_, 'NEW_VALUE_DB', 'TRUE');
+      Fnd_Event_Parameter_API.Register(event_lu_name_, event_id_, id_, info_msg_);
+   -- Register Event Parameter
+      info_msg_ := Message_SYS.Construct('');
+      id_  := Database_SYS.Unistr('WORK_TYPE_ID');
+      Message_SYS.Add_Attribute(info_msg_, 'ID_TYPE', 'STRING');
+      Message_SYS.Add_Attribute(info_msg_, 'PLSQL_METHOD', Database_SYS.Unistr(''));
+      Message_SYS.Add_Attribute(info_msg_, 'CURRENT_VALUE_DB', 'FALSE');
+      Message_SYS.Add_Attribute(info_msg_, 'NEW_VALUE_DB', 'TRUE');
+      Fnd_Event_Parameter_API.Register(event_lu_name_, event_id_, id_, info_msg_);
+   -- Register Event Parameter
+      info_msg_ := Message_SYS.Construct('');
+      id_  := Database_SYS.Unistr('WO_STATUS_ID');
+      Message_SYS.Add_Attribute(info_msg_, 'ID_TYPE', 'STRING');
+      Message_SYS.Add_Attribute(info_msg_, 'PLSQL_METHOD', Database_SYS.Unistr(''));
+      Message_SYS.Add_Attribute(info_msg_, 'CURRENT_VALUE_DB', 'FALSE');
+      Message_SYS.Add_Attribute(info_msg_, 'NEW_VALUE_DB', 'TRUE');
+      Fnd_Event_Parameter_API.Register(event_lu_name_, event_id_, id_, info_msg_);
+   -- Update all actions with parameters
+      Fnd_Event_Action_API.Update_Action(event_lu_name_, event_id_, NULL);
+END;
+/
+COMMIT
+/
+SET DEFINE &
