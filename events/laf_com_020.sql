@@ -26,4 +26,12 @@ BEGIN
   
   END IF;
 
+  exception
+  when no_data_found then
+  begin
+
+      RAISE_APPLICATION_ERROR(-20100,'Vendedor não possui desconto parametrizado');
+
+  end;
+
 END;

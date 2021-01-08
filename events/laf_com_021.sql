@@ -25,5 +25,12 @@ BEGIN
     RAISE_APPLICATION_ERROR(-20100,'Desconto aplicado acima do permitido para seu usuário! Seu usuário possui permissão de  : ' || DISCOUNT_ALLOW_ || '%');
   
   END IF;
+  exception
+  when no_data_found then
+  begin
+
+      RAISE_APPLICATION_ERROR(-20100,'Vendedor não possui desconto parametrizado');
+
+  end;
 
 END;
