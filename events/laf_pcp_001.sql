@@ -1,3 +1,8 @@
+-- LU: CustomerOrderLine
+-- Table: CUSTOMER_ORDER_LINE_CFT
+-- Campos: CF$_PCP_DATE (NEW & OLD), ROWKEY - NEW & ALTER
+-- Acionamentos: 
+
 DECLARE
 
   attr_     varchar2(3200);
