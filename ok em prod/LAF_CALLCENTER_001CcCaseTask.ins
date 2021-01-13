@@ -3,7 +3,7 @@
 -- 
 --  Date    Sign    History
 --  ------  ------  -----------------------------------------------------------
---  201121  LUCAS.  Export file for task LAF_CALLCENTER_001.
+--  210113  IFSLAF  Export file for task LAF_CALLCENTER_001.
 -------------------------------------------------------------------------------------------- 
 
 SET DEFINE ~
@@ -38,6 +38,22 @@ BEGIN
    -- Register Event Parameter
       info_msg_ := Message_SYS.Construct('');
       id_  := Database_SYS.Unistr('QUEUE');
+      Message_SYS.Add_Attribute(info_msg_, 'ID_TYPE', 'STRING');
+      Message_SYS.Add_Attribute(info_msg_, 'PLSQL_METHOD', Database_SYS.Unistr(''));
+      Message_SYS.Add_Attribute(info_msg_, 'CURRENT_VALUE_DB', 'FALSE');
+      Message_SYS.Add_Attribute(info_msg_, 'NEW_VALUE_DB', 'TRUE');
+      Fnd_Event_Parameter_API.Register(event_lu_name_, event_id_, id_, info_msg_);
+   -- Register Event Parameter
+      info_msg_ := Message_SYS.Construct('');
+      id_  := Database_SYS.Unistr('ROWSTATE');
+      Message_SYS.Add_Attribute(info_msg_, 'ID_TYPE', 'STRING');
+      Message_SYS.Add_Attribute(info_msg_, 'PLSQL_METHOD', Database_SYS.Unistr(''));
+      Message_SYS.Add_Attribute(info_msg_, 'CURRENT_VALUE_DB', 'FALSE');
+      Message_SYS.Add_Attribute(info_msg_, 'NEW_VALUE_DB', 'TRUE');
+      Fnd_Event_Parameter_API.Register(event_lu_name_, event_id_, id_, info_msg_);
+   -- Register Event Parameter
+      info_msg_ := Message_SYS.Construct('');
+      id_  := Database_SYS.Unistr('TRACKER_ID');
       Message_SYS.Add_Attribute(info_msg_, 'ID_TYPE', 'STRING');
       Message_SYS.Add_Attribute(info_msg_, 'PLSQL_METHOD', Database_SYS.Unistr(''));
       Message_SYS.Add_Attribute(info_msg_, 'CURRENT_VALUE_DB', 'FALSE');
