@@ -1,0 +1,15 @@
+-- LU: PurchaseOrder
+-- Tabela: PURCHASE_ORDER_CFT
+-- Campos: CF$_NEED_DATE - NEW & ALTER
+-- Acionamento: 
+
+BEGIN 
+
+IF TO_DATE('&NEW:CF$_NEED_DATE', 'YYYY-MM-DD HH24.MI.SS')  < SYSDATE 
+
+THEN  raise_application_error (-20100, 'A DATA DE NECESSIDADE DE COMPRA NÃO PDOE SER MENOR QUE A DATA ATUAL');
+
+
+END IF;
+
+END;

@@ -1,3 +1,8 @@
+-- LU: CusomerOrderLine
+-- Table: CUSTOMER_ORDER_LINE_CFT
+-- Campos: CF$_PCP_DATE, CF$_RESCHEDULING_PCP_REASO - NEW & ALTER
+-- Acionamentos:
+
 DECLARE
 
 BEGIN
