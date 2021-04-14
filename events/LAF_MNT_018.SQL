@@ -3,11 +3,12 @@
 -- Ação: Novos e Alterações
 -- Campo: ROWSATE
 
-DECDECLARE
+DECLARE
 
 PRAGMA AUTONOMOUS_TRANSACTION;
 
   pcp_date_ varchar2(3200) := null;
+  order_id_ varchar2(3200) := &ORDER_ID;
 
 BEGIN
 
@@ -19,7 +20,7 @@ BEGIN
      and rel_no = '&NEW:REL_NO';
 
 
-IF ORDER_ID = 'OV' OR ORDER_ID = 'OR' OR ORDER_ID = 'SBT' THEN
+IF order_id_ = 'OV' OR order_id_ = 'OR' OR order_id_ = 'SBT' THEN
 
   IF pcp_date_ IS NULL THEN
   
