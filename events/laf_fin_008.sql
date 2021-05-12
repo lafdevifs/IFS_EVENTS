@@ -31,7 +31,7 @@ p3_  := 'CF$_AGREEMENT_ID' || chr(31) ||
                          '&NEW:AGREEMENT_ID' || chr(30) ||
                          'CF$_AGREEMENT_LINE_NO' || chr(31) ||
                          '&NEW:LINE_NO' || chr(30) ||  'CF$_APPROVED_ANALYSIS_CRED_DB' || chr(31) ||
-                         '2' || chr(30)  ||  'CF$_REQUEST_DATE' || chr(31) ||  REQUEST_DATE_ || chr(30);
+                         '2' || chr(30)  ||  'CF$_ANALYSIS_REQUEST' || chr(31) ||  REQUEST_DATE_ || chr(30);
 
     
 

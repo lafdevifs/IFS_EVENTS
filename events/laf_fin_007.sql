@@ -28,7 +28,9 @@ INTO REQUEST_DATE_
 from dual;
 
 
-p3_ :=  'CF$_QUOTATION_NO'||chr(31)|| '&NEW:QUOTATION_NO'||chr(30)  ||  'CF$_APPROVED_ANALYSIS_CRED_DB' || chr(31) || '2' || chr(30)  ||  'CF$_REQUEST_DATE' || chr(31) ||  REQUEST_DATE_ || chr(30);
+p3_ :=  'CF$_QUOTATION_NO'||chr(31)|| '&NEW:QUOTATION_NO'||chr(30)  || 
+ 'CF$_APPROVED_ANALYSIS_CRED_DB' || chr(31) || '2' || chr(30)  ||  'CF$_ANALYSIS_REQUEST' 
+ || chr(31) ||  REQUEST_DATE_ || chr(30);
 
     
 IFSLAF.LAF_CREDIT_ANALYSIS_CLP.NEW__( p0_ , p1_ , p2_ , p3_ , p4_ );
