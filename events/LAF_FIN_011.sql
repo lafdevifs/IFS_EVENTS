@@ -8,10 +8,10 @@ BEGIN
     INTO ANALYSIS_CREDIT_
     FROM LAF_CREDIT_ANALYSIS_CLV
     WHERE CF$_QUOTATION_NO = &NEW:QUOTATION_NO
-    AND CF$_APPROVED_ANALYSIS_CRED_DB = '2'
-    ORDER BY OBJVERSION DESC;
+    ORDER BY OBJVERSION DESC
+    FETCH FIRST 1 ROWS ONLY;
 
-IF ANALYSIS_CREDIT_DB = 2 THEN 
+IF ANALYSIS_CREDIT_ = 2 THEN 
 
     RAISE_APPLICATION_ERROR(-20100,
                             'LAF_FIN_008: Não é possível enviar para a análise de crédito, pois a linha já está em análise aguarde retorno do Financeiro!');
@@ -22,6 +22,6 @@ END IF;
 EXCEPTION
   WHEN NO_DATA_FOUND THEN
     BEGIN
-        RAISE_APPLICATION_ERROR(-20100,'Não foi possível encontrar os dados!');
+      DBMS_OUTPUT.PUT_LINE('');
     END;
 END;
