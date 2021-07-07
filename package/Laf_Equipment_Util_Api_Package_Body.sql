@@ -19,7 +19,7 @@ IS
    IS
       temp_ EQUIPMENT_OBJECT_MEAS_TAB.RECORDED_VALUE%TYPE;
       CURSOR get_attr IS
-         SELECT RECORDED_VALUE
+         SELECT MEASURED_VALUE
          FROM   EQUIPMENT_OBJECT_MEAS_TAB
          WHERE mch_code= mch_code_ 
          AND contract = contract_
