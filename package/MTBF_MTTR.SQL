@@ -1,0 +1,71 @@
+SELECT EOM.CONTRACT, EOM.MCH_CODE, IFSLAF.Equipment_Object_API.Get_Mch_Name(EOM.CONTRACT, EOM.MCH_CODE) AS  MCH_NAME, SUBSTR(EOM.REG_DATE,4,6) MES_ANO,
+SUM((EOM.MEASURED_VALUE - IFSLAF.Laf_Equipment_Utils_Api.Laf_Get_Prev_Recorded_Value_By_Date(EOM.reg_date,EOM.contract,EOM.mch_code,EOM.test_point_id, EOM.parameter_code) )) AS RODAGEM ,
+( SELECT SUM(24*(MAX(JTU.actual_finish) -MIN(JTU.actual_start))) HORAS
+  FROM  IFSLAF.JT_TASK_UIV JTU
+  WHERE JTU.work_type_id = 'COR'
+  AND JTU.ACTUAL_OBJECT_ID = EOM.MCH_CODE
+  AND JTU.actual_object_site  = EOM.CONTRACT
+  AND JTU.OBJSTATE IN ('FINISHED','WORKDONE')
+      AND SUBSTR(JTU.actual_finish,4,6) = SUBSTR(EOM.REG_DATE,4,6)
+      GROUP BY SUBSTR(JTU.actual_finish,4,6)
+) TEMPO_EM_MANUTENCAO,
+(SELECT SUM(COUNT(DISTINCT(WO_NO))) AS OS
+  FROM  IFSLAF.JT_TASK_UIV JTU
+  WHERE JTU.work_type_id = 'COR'
+  AND JTU.ACTUAL_OBJECT_ID = EOM.MCH_CODE
+  AND JTU.actual_object_site  = EOM.CONTRACT
+  AND JTU.OBJSTATE IN ('FINISHED','WORKDONE')
+      AND SUBSTR(JTU.actual_finish,4,6) = SUBSTR(EOM.REG_DATE,4,6)
+      GROUP BY SUBSTR(JTU.actual_finish,4,6)
+) QTD_OS,
+( (
+   (SUM((EOM.MEASURED_VALUE - IFSLAF.Laf_Equipment_Utils_Api.Laf_Get_Prev_Recorded_Value_By_Date(EOM.reg_date,EOM.contract,EOM.mch_code,EOM.test_point_id, EOM.parameter_code) )) )
+   -
+    (SELECT SUM(24*(MAX(JTU.actual_finish) -MIN(JTU.actual_start))) HORAS
+      FROM  IFSLAF.JT_TASK_UIV JTU
+      WHERE JTU.work_type_id = 'COR'
+      AND JTU.ACTUAL_OBJECT_ID = EOM.MCH_CODE
+      AND JTU.actual_object_site  = EOM.CONTRACT
+      AND JTU.OBJSTATE IN ('FINISHED','WORKDONE')
+      AND SUBSTR(JTU.actual_finish,4,6) = SUBSTR(EOM.REG_DATE,4,6)
+      GROUP BY SUBSTR(JTU.actual_finish,4,6)
+    )
+  ) /
+  (
+  SELECT SUM(COUNT(DISTINCT(WO_NO))) AS OS
+  FROM  IFSLAF.JT_TASK_UIV JTU
+  WHERE JTU.work_type_id = 'COR'
+  AND JTU.ACTUAL_OBJECT_ID = EOM.MCH_CODE
+  AND JTU.actual_object_site  = EOM.CONTRACT
+  AND JTU.OBJSTATE IN ('FINISHED','WORKDONE')
+    AND SUBSTR(JTU.actual_finish,4,6) = SUBSTR(EOM.REG_DATE,4,6)
+    GROUP BY SUBSTR(JTU.actual_finish,4,6)
+  )
+) MTBF ,
+(
+  (SELECT SUM(24*(MAX(JTU.actual_finish) -MIN(JTU.actual_start))) HORAS
+    FROM  IFSLAF.JT_TASK_UIV JTU
+    WHERE JTU.work_type_id = 'COR'
+    AND JTU.ACTUAL_OBJECT_ID = EOM.MCH_CODE
+    AND JTU.actual_object_site = EOM.CONTRACT
+    AND JTU.OBJSTATE IN ('FINISHED','WORKDONE')
+    AND SUBSTR(JTU.actual_finish,4,6) = SUBSTR(EOM.REG_DATE,4,6)
+    GROUP BY SUBSTR(JTU.actual_finish,4,6)
+  )
+   /
+  (
+  SELECT SUM(COUNT(DISTINCT(WO_NO))) AS OS
+  FROM  IFSLAF.JT_TASK_UIV JTU
+  WHERE JTU.work_type_id = 'COR'
+  AND JTU.ACTUAL_OBJECT_ID = EOM.MCH_CODE
+  AND JTU.actual_object_site = EOM.CONTRACT
+  AND JTU.OBJSTATE IN ('FINISHED','WORKDONE')
+    AND SUBSTR(JTU.actual_finish,4,6) = SUBSTR(EOM.REG_DATE,4,6)
+    GROUP BY  SUBSTR(JTU.actual_finish,4,6)
+  )
+) MTTR
+FROM  IFSLAF.EQUIPMENT_OBJECT_MEAS EOM
+WHERE EOM.MEASUREMENT_TYPE_DB = 'RecordedReading'
+AND EOM.PARAMETER_CODE = 'HR'
+AND EOM.REG_DATE >= TO_DATE('01/04/2021','DD/MM/YYYY')
+GROUP BY EOM.CONTRACT, EOM.MCH_CODE,IFSLAF.Equipment_Object_API.Get_Mch_Name(EOM.CONTRACT, EOM.MCH_CODE),SUBSTR(EOM.REG_DATE,4,6)
