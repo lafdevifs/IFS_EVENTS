@@ -15,6 +15,7 @@ begin
   if 
       lenght(&NEW:CNPJ) =! 18 then
       raise_application_error(-20100, 'O CNPJ', &NEW:CNPJ,'está incompleto'); 
+      -- teste
     
   end if;
 end;
