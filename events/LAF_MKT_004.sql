@@ -19,6 +19,7 @@ DECLARE
 
   COMPANY_ varchar2(3200);
 
+  PERSON_ID_ varchar2(3200);
   NAME_  varchar2(3200);
   PHONE_ varchar2(3200);
   EMAIL_ varchar2(3200);
@@ -45,7 +46,8 @@ AND co.order_no =  ORDER_NO_;
         FROM ifslaf.COMPANY_SITE
       WHERE CONTRACT = '&NEW:CONTRACT';
       
-        SELECT ifslaf.Person_Info_API.Get_Name(CONTACT_ID),
+        SELECT CONTACT_ID,
+        ifslaf.Person_Info_API.Get_Name(CONTACT_ID),
               NVL(COMM_METHOD_API.Get_Value('PERSON',
                                             CONTACT_ID,
                                             COMM_METHOD_CODE_API.Decode('MOBILE'),
@@ -64,7 +66,7 @@ AND co.order_no =  ORDER_NO_;
                                         1,
                                         CONTACT_ADDRESS,
                                         sysdate) 
-          INTO NAME_, PHONE_, EMAIL_
+          INTO PERSON_ID_, NAME_, PHONE_, EMAIL_
           FROM ifslaf.BUSINESS_OBJECT_CONTACT
         WHERE BUSINESS_OBJECT_ID = '&NEW:C_AGREEMENT_ID'
           AND CONNECTION_ID = '&NEW:CUSTOMER_NO'
@@ -77,6 +79,7 @@ AND co.order_no =  ORDER_NO_;
       'CF$_SALESMAN_CODE'||chr(31)|| SALESMAN_CODE_ ||chr(30)||
       'CF$_ORDER_NO'||chr(31)|| ORDER_NO_ ||chr(30)||
       'CF$_INTEGRATION_EXT'||chr(31)||'INOVYO'||chr(30)||
+      'CF$_PERSON_ID'||chr(31)|| PERSON_ID_ ||chr(30)||
       'CF$_EMAIL'||chr(31)|| EMAIL_ ||chr(30)||
       'CF$_NAME'||chr(31)|| NAME_ ||chr(30)||
       'CF$_PHONE'||chr(31)|| PHONE_ ||chr(30)|| 
@@ -92,7 +95,8 @@ AND co.order_no =  ORDER_NO_;
         FROM ifslaf.COMPANY_SITE
       WHERE CONTRACT = '&NEW:CONTRACT';
 
-        SELECT ifslaf.Person_Info_API.Get_Name(CONTACT_ID),
+        SELECT CONTACT_ID,
+        ifslaf.Person_Info_API.Get_Name(CONTACT_ID),
               NVL(COMM_METHOD_API.Get_Value('PERSON',
                                             CONTACT_ID,
                                             COMM_METHOD_CODE_API.Decode('MOBILE'),
@@ -111,7 +115,7 @@ AND co.order_no =  ORDER_NO_;
                                         1,
                                         CONTACT_ADDRESS,
                                         sysdate)
-          INTO NAME_, PHONE_, EMAIL_
+          INTO PERSON_ID_, NAME_, PHONE_, EMAIL_
           FROM ifslaf.BUSINESS_OBJECT_CONTACT
         WHERE BUSINESS_OBJECT_ID = '&NEW:QUOTATION_NO'
           AND CONNECTION_ID = '&NEW:CUSTOMER_NO'
@@ -124,7 +128,8 @@ AND co.order_no =  ORDER_NO_;
       'CF$_SALESMAN_CODE'||chr(31)|| SALESMAN_CODE_ ||chr(30)||
       'CF$_ORDER_NO'||chr(31)|| ORDER_NO_||chr(30)||
       'CF$_INTEGRATION_EXT'||chr(31)||'INOVYO'||chr(30)||
-      'CF$_EMAIL'||chr(31)|| EMAIL_ ||chr(30)||
+      'CF$_EMAIL'||chr(31)|| EMAIL_ ||chr(30)||      
+      'CF$_PERSON_ID'||chr(31)|| PERSON_ID_ ||chr(30)||
       'CF$_NAME'||chr(31)|| NAME_ ||chr(30)||
       'CF$_PHONE'||chr(31)|| PHONE_ ||chr(30)|| 
       'CF$_CREATION_DATE' ||chr(31)|| CREATION_DATE_ ||chr(30)||

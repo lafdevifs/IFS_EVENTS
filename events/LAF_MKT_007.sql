@@ -19,6 +19,7 @@ DECLARE
 
   COMPANY_ varchar2(3200);
 
+  PERSON_ID_  varchar2(3200);
   NAME_  varchar2(3200);
   PHONE_ varchar2(3200);
   EMAIL_ varchar2(3200);
@@ -52,6 +53,7 @@ BEGIN
                                      1,
                                      NULL,
                                      sysdate) EMAIL,
+           ORDER_QUOTATION_API.Get_Cust_Ref(quotation_no_ => '&NEW:QUOTATION_NO') PERSON_ID,
            ifslaf.Person_Info_API.Get_Name(person_id_ => ORDER_QUOTATION_API.Get_Cust_Ref(quotation_no_ => '&NEW:QUOTATION_NO')) NAME,
            NVL(COMM_METHOD_API.Get_Value('PERSON',
                                          ORDER_QUOTATION_API.Get_Cust_Ref(quotation_no_ => '&NEW:QUOTATION_NO'),
@@ -72,6 +74,7 @@ BEGIN
            SALESMAN_CODE_,
            ORDER_NO_,
            EMAIL_,
+           PERSON_ID_,
            NAME_,
            PHONE_,
            CREATION_DATE_            
@@ -86,8 +89,9 @@ BEGIN
            'CF$_SALESMAN_CODE' || chr(31) || SALESMAN_CODE_ || chr(30) ||
            'CF$_ORDER_NO' || chr(31) || ORDER_NO_ || chr(30) ||
            'CF$_INTEGRATION_EXT' || chr(31) || 'INOVYO' || chr(30) ||
-           'CF$_EMAIL' || chr(31) || EMAIL_ || chr(30) || 'CF$_NAME' ||
-           chr(31) || NAME_ || chr(30) || 'CF$_PHONE' || chr(31) || PHONE_ ||
+           'CF$_EMAIL' || chr(31) || EMAIL_ || chr(30) ||                              
+           'CF$_PERSON_ID'||chr(31)|| PERSON_ID_ ||chr(30)||
+           'CF$_NAME' || chr(31) || NAME_ || chr(30) || 'CF$_PHONE' || chr(31) || PHONE_ ||
            chr(30) || 'CF$_CREATION_DATE' || chr(31) || CREATION_DATE_ ||
            chr(30) || 'CF$_SURVEY' || chr(31) || SURVEY_ || chr(30);
   

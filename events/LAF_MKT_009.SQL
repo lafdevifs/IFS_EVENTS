@@ -13,6 +13,7 @@ DECLARE
   SURVEY_          NUMBER := 576;
   INTEGRATION_EXT_ varchar2(3200) := 'INOVYO';
 
+  PERSON_ID_ VARCHAR2(3200);
   NAME_  varchar2(3200);
   PHONE_ varchar2(3200);
   EMAIL_ varchar2(3200);
@@ -36,7 +37,11 @@ BEGIN
 
   IF EXISTS_ORDER_NO_ IS NOT NULL THEN
   
-    SELECT ifslaf.Person_Info_API.Get_Name (SELECT PERSON_ID
+    SELECT (SELECT PERSON_ID
+            FROM IFSLAF.CUSTOMER_INFO_CONTACT
+            where customer_id = CUSTOMER_NO_
+            FETCH 1 ROW ONLY) AS PERSON_ID,          
+          ifslaf.Person_Info_API.Get_Name (SELECT PERSON_ID
                                               FROM IFSLAF.CUSTOMER_INFO_CONTACT
                                              where customer_id = CUSTOMER_NO_
                                              FETCH 1 ROW ONLY),
@@ -68,10 +73,10 @@ BEGIN
                                             1,
                                             CONTACT_ADDRESS,
                                             sysdate)
-      INTO NAME_, PHONE_, EMAIL_
+      INTO PERSON_ID_,NAME_, PHONE_, EMAIL_
       FROM ifslaf.BUSINESS_OBJECT_CONTACT
            
-           p3_ := 'CF$_CUSTOMER_NO' || chr(31) || CUSTOMER_NO_ || chr(30) || 'CF$_INTEGRATION_EXT' || chr(31) || 'INOVYO' || chr(30) || 'CF$_EMAIL' || chr(31) || EMAIL_ || chr(30) || 'CF$_NAME' || chr(31) || NAME_ || chr(30) || 'CF$_PHONE' || chr(31) || PHONE_ || chr(30) || 'CF$_CREATION_DATE' || chr(31) || CREATION_DATE_ || chr(30) || 'CF$_SURVEY' || chr(31) || SURVEY_ || chr(30);
+           p3_ := 'CF$_CUSTOMER_NO' || chr(31) || CUSTOMER_NO_ || chr(30) || 'CF$_INTEGRATION_EXT' || chr(31) || 'INOVYO' || chr(30) || 'CF$_EMAIL' || chr(31) || EMAIL_ || chr(30) || 'CF$_PERSON_ID'||chr(31)|| PERSON_ID_ ||chr(30)||'CF$_NAME' || chr(31) || NAME_ || chr(30) || 'CF$_PHONE' || chr(31) || PHONE_ || chr(30) || 'CF$_CREATION_DATE' || chr(31) || CREATION_DATE_ || chr(30) || 'CF$_SURVEY' || chr(31) || SURVEY_ || chr(30);
   
     IFSLAF.LAF_INTEGRACAO_CLP.NEW__(p0_, p1_, p2_, p3_, p4_);
   

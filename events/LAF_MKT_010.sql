@@ -13,6 +13,7 @@ DECLARE
 
   COMPANY_ varchar2(3200);
 
+  PERSON_ID_ varchar2(3200);
   NAME_  varchar2(3200);
   PHONE_ varchar2(3200);
   EMAIL_ varchar2(3200);
@@ -26,6 +27,7 @@ DECLARE
 
   CURSOR CLI_INATIVOS IS
     SELECT CIC.CUSTOMER_ID,
+          CIC.PERSON_ID,
            PERSON_INFO_API.Get_Name(CIC.PERSON_ID),
            Comm_Method_API.Get_Value('PERSON',
                                      CIC.person_id,
@@ -77,7 +79,7 @@ BEGIN
     OPEN CLI_INATIVOS;
     loop
       FETCH CLI_INATIVOS
-        INTO CUSTOMER_NO_, NAME_, EMAIL_, PHONE_, CREATION_DATE_;
+        INTO CUSTOMER_NO_, PERSON_ID_, NAME_, EMAIL_, PHONE_, CREATION_DATE_;
     
       EXIT WHEN CLI_INATIVOS%NOTFOUND;
       
@@ -87,8 +89,9 @@ BEGIN
              'CF$_SALESMAN_CODE' || chr(31) || SALESMAN_CODE_ || chr(30) ||
              'CF$_ORDER_NO' || chr(31) || ORDER_NO_ || chr(30) ||
              'CF$_INTEGRATION_EXT' || chr(31) || 'INOVYO' || chr(30) ||
-             'CF$_EMAIL' || chr(31) || EMAIL_ || chr(30) || 'CF$_NAME' ||
-             chr(31) || NAME_ || chr(30) || 'CF$_PHONE' || chr(31) ||
+             'CF$_EMAIL' || chr(31) || EMAIL_ || chr(30) ||                                
+             'CF$_PERSON_ID'||chr(31)|| PERSON_ID_ ||chr(30)||
+             'CF$_NAME' || chr(31) || NAME_ || chr(30) || 'CF$_PHONE' || chr(31) ||
              PHONE_ || chr(30) || 'CF$_CREATION_DATE' || chr(31) ||
              CREATION_DATE_ || chr(30) || 'CF$_SURVEY' || chr(31) ||
              SURVEY_ || chr(30);
