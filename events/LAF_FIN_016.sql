@@ -33,9 +33,9 @@ declare
   cursor alertas_de_vencimento is 
    select rl.level_description,rl.reminder_text, rl.min_days_to_next_reminder, rl.company
      from reminder_level rl
-     where rl.company = '01'
-     and rl.min_days_to_next_reminder = 1-- > 0
-     and rl.template_id = 1;
+     where rl.company = '01' -- Definir quais empresas enviarão notificações de vencimento/vencidas
+     and rl.min_days_to_next_reminder = > 0
+     and rl.template_id = 1; -- Template 1 é o para vencer 
                                 
 
 begin
@@ -48,7 +48,7 @@ LOOP
         EXIT WHEN alertas_de_vencimento%NOTFOUND; 
         
         FOR data_titulos_ IN ( 
-             select ciif.company,
+          select ciif.company,
              Company_api.Get_Name(company_ => ciif.company) company_name,
              company_br_tax_info_api.Get_Cnpj(company_ => ciif.company,address_id_ => customer_order_api.Get_Contract(order_no_ => ciif.order_reference)) Company_CNPJ,
              ciif.identity,
@@ -65,16 +65,36 @@ LOOP
              ciif.ledger_date,
              TO_CHAR(ciif.open_amount,'L99G999D99MI') Valor,
              customer_order_api.Get_Ship_Addr_No(order_no_ => ciif.order_reference) Addr_no,
-             Customer_Info_Address_API.Get_Name(customer_id_ => ciif.identity,
+             Customer_Info_Address_API.Get_Address(customer_id_ => ciif.identity,
                                                 address_id_  => customer_order_api.Get_Ship_Addr_No(order_no_ => ciif.order_reference)) Addr_Name,
              customer_order_api.Get_Operation_Id(order_no_ => ciif.order_reference) ID_Opercaocao,
-             Customer_Order_API.Get_Operation_Description(customer_order_api.Get_Operation_Id(order_no_ => ciif.order_reference)) Operacao
-       --into empresa_, empresa_name_ ,empresa_cnpj_ ,id_cliente_, nome_cliente_, cnpj_ , data_envio_, data_vencimento_ , order_no_, contract_,id_contato_agree_, agreement_id_, invoice_no_, ledger_date_, open_amount_, addr_no_, addr_name_, operation_id_, operation_name_
+             Customer_Order_API.Get_Operation_Description(customer_order_api.Get_Operation_Id(order_no_ => ciif.order_reference)) Operacao,
+             ciif.ledger_item_series_id, 
+             CUSTOMER_ORDER_API.Get_Order_Id(order_no_ => 
+             CUSTOMER_ORDER_INV_HEAD_API.Get_Creators_Reference(company_ => ciif.company, invoice_id_ => ciif.invoice_id)) ORDER_ID
         from CUST_INV_INTEREST_FINE_QRY ciif
-       where ciif.C_DUE_DATE_ORG = trunc(sysdate +1 )--+days_alert_)
+       where ciif.C_DUE_DATE_ORG = trunc(sysdate +days_alert_) -- '01' )
          and ciif.OPEN_AMOUNT > 0
-         and ciif.company = empresa_text_
-         and ciif.CLIENT_INV_STATE != 'Cancelado' 
+         and ciif.company =empresa_text_  --'01'
+         and ciif.CLIENT_INV_STATE != 'Cancelado'
+        
+         
+        and ciif.ledger_item_series_id not in (         
+         
+         select LEST.cf$_Serie_Titulo
+         from LAF_EXECECOES_SER_TIT_CLV LEST
+         
+          )
+         and CUSTOMER_ORDER_API.Get_Order_Id(order_no_ => 
+             CUSTOMER_ORDER_INV_HEAD_API.Get_Creators_Reference(company_ => ciif.company, invoice_id_ => ciif.invoice_id)) not in (
+             select LENOV.cf$_Tipo_Ov 
+         from LAF_EXECECOES_NOT_FIN_CLV LENOV
+             )             
+         and ciif.identity not in (
+             select LECLI.cf$_Id_Cliente
+         from LAF_EXCECOES_CARTA_NOTIFI_CLV LECLI
+             )
+             
          )
          
          LOOP      
@@ -139,7 +159,7 @@ LOOP
                  command_sys.Mail( 
                              from_user_name_ => 'ti@lafaete.com.br',
                              to_user_name_   => email_contato_,
-                             cc_             => 'tamara@lafaete.com.br',
+                             cc_             => 'tamara@lafaete.com.br;barbara.carmo@lafaete.com.br',
                              subject_        => tit_text_,
                              text_           => text_
                              
